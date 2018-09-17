@@ -23,14 +23,14 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Hadoop基础 是什么 Hadoop是Apache开源组织的一个分布式计算开源框架（http://hadoop.apache.org/)， 能够实现集群中对海量数据进行分布式计算。   Hadoop架构 HDFS: 提供对应用程序数据高吞吐量访问的分布式文件系统。 YARN: 作业调度和集群资源管理的框架 MapReduce: 基于YARN的大型数据集并行处理系统，实现分布式计算。 Others">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://weizhaome.github.io/2018/09/16/images/Hadoop.png">
-<meta property="og:image" content="https://weizhaome.github.io/2018/09/16/images/YARN.png">
-<meta property="og:image" content="https://weizhaome.github.io/2018/09/16/images/MapReduce.png">
-<meta property="og:updated_time" content="2018-09-17T09:30:26.865Z">
+<meta property="og:image" content="https://weizhaome.github.io/images/Hadoop.png">
+<meta property="og:image" content="https://weizhaome.github.io/images/YARN.png">
+<meta property="og:image" content="https://weizhaome.github.io/images/MapReduce.png">
+<meta property="og:updated_time" content="2018-09-17T11:58:12.858Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hadoop 笔记">
 <meta name="twitter:description" content="Hadoop基础 是什么 Hadoop是Apache开源组织的一个分布式计算开源框架（http://hadoop.apache.org/)， 能够实现集群中对海量数据进行分布式计算。   Hadoop架构 HDFS: 提供对应用程序数据高吞吐量访问的分布式文件系统。 YARN: 作业调度和集群资源管理的框架 MapReduce: 基于YARN的大型数据集并行处理系统，实现分布式计算。 Others">
-<meta name="twitter:image" content="https://weizhaome.github.io/2018/09/16/images/Hadoop.png">
+<meta name="twitter:image" content="https://weizhaome.github.io/images/Hadoop.png">
 
   
 
@@ -183,7 +183,7 @@
 <p>Hadoop是Apache开源组织的一个分布式计算开源框架（<a href="http://hadoop.apache.org/)，" target="_blank" rel="noopener">http://hadoop.apache.org/)，</a> 能够实现集群中对海量数据进行分布式计算。</p>
 </blockquote>
 </li>
-<li><h2 id="Hadoop架构"><a href="#Hadoop架构" class="headerlink" title="Hadoop架构"></a>Hadoop架构</h2><img src="../images/Hadoop.png" alt="Github"></li>
+<li><h2 id="Hadoop架构"><a href="#Hadoop架构" class="headerlink" title="Hadoop架构"></a>Hadoop架构</h2><img src="/images/Hadoop.png" alt="Github"></li>
 <li>HDFS: 提供对应用程序数据高吞吐量访问的分布式文件系统。</li>
 <li>YARN: 作业调度和集群资源管理的框架</li>
 <li>MapReduce: 基于YARN的大型数据集并行处理系统，实现分布式计算。</li>
@@ -207,10 +207,18 @@
 </li>
 </ol>
 <ul>
-<li>YARN的架构图</li>
+<li>YARN的架构图及流程</li>
 </ul>
-<p><img src="../images/YARN.png" alt="Github" title="YARN"><br>详情请见：<a href="https://blog.csdn.net/suifeng3051/article/details/49486927" target="_blank" rel="noopener">https://blog.csdn.net/suifeng3051/article/details/49486927</a></p>
-<h3 id="MapReduce主要过程"><a href="#MapReduce主要过程" class="headerlink" title="MapReduce主要过程"></a>MapReduce主要过程</h3><p>MapReduce把一个任务拆分成了多个小任务，并把子任务分配到多台计算机上进行工作。最终，每台计算机上的计算结果会被搜集起来并合并成最终的结果。在Map阶段将数据集的键值对映射为另一组键值对。Reduce阶段得到Map的输出，并把具有相同键的数据合并成一个更小的键值对数据集。<br><img src="../images/MapReduce.png" alt="Github" title="MapReduce"></p>
+<p><img src="/images/YARN.png" alt="Github" title="YARN"></p>
+<p>1.客户端程序向ResourceManager提交应用并请求一个ApplicationMaster实例</p>
+<p>2.ResourceManager找到可以运行一个Container的NodeManager，并在这个Container中启动ApplicationMaster实例</p>
+<p>3.ApplicationMaster向ResourceManager进行注册，注册之后客户端就可以查询ResourceManager获得自己ApplicationMaster的详细信息，以后就可以和自己的ApplicationMaster直接交互了</p>
+<p>4.在平常的操作过程中，ApplicationMaster根据resource-request协议向ResourceManager发送resource-request请求</p>
+<p>5.当Container被成功分配之后，ApplicationMaster通过向NodeManager发送container-launch-specification信息来启动Container， container-launch-specification信息包含了能够让Container和ApplicationMaster交流所需要的资料</p>
+<p>6.应用程序的代码在启动的Container中运行，并把运行的进度、状态等信息通过application-specific协议发送给ApplicationMaster</p>
+<p>7.在应用程序运行期间，提交应用的客户端主动和ApplicationMaster交流获得应用的运行状态、进度更新等信息，交流的协议也是application-specific协议</p>
+<p>8.一但应用程序执行完成并且所有相关工作也已经完成，ApplicationMaster向ResourceManager取消注册然后关闭，用到所有的Container也归还给系统<br>详情请见：<a href="https://blog.csdn.net/suifeng3051/article/details/49486927" target="_blank" rel="noopener">https://blog.csdn.net/suifeng3051/article/details/49486927</a></p>
+<h3 id="MapReduce主要过程"><a href="#MapReduce主要过程" class="headerlink" title="MapReduce主要过程"></a>MapReduce主要过程</h3><p>MapReduce把一个任务拆分成了多个小任务，并把子任务分配到多台计算机上进行工作。最终，每台计算机上的计算结果会被搜集起来并合并成最终的结果。在Map阶段将数据集的键值对映射为另一组键值对。Reduce阶段得到Map的输出，并把具有相同键的数据合并成一个更小的键值对数据集。<br><img src="/images/MapReduce.png" alt="Github" title="MapReduce"></p>
 <ul>
 <li>Input Phase: 使用一个Record Reader将输入文件中的每一条数据转换为键值对的形式，并把这些处理好的数据发送给Mapper。</li>
 <li>Map: Map是是用户自定义的一个函数，此函数接收一系列的键值对数据并对它们进行处理，最后生成0个或多个键值对数据。</li>
