@@ -24,7 +24,8 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://weizhaome.github.io/images/RDD队列流.png">
 <meta property="og:image" content="https://weizhaome.github.io/images/RDD队列流-2.png">
-<meta property="og:updated_time" content="2018-09-18T08:00:39.948Z">
+<meta property="og:image" content="https://weizhaome.github.io/images/RDD文件流.png">
+<meta property="og:updated_time" content="2018-09-18T09:09:42.269Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark Streaming">
 <meta name="twitter:description" content="Spark Streaming Spark Streaming是构建在Spark上的实时计算框架，它扩展了Spark处理大规模流式数据的能力。Spark Streaming可结合批处理和交互查询，适合一些需要对历史数据和实时数据进行结合分析的应用场景。Spark Streaming最主要的抽象是DStream（Discretized Stream，离散化数据流），表示连续不断的数据流。在内部实现上">
@@ -192,6 +193,7 @@
 <p>下面是参考Spark官网的QueueStream程序设计的程序，每隔1秒创建一个RDD，Streaming每隔2秒就对数据进行处理。</p>
 <p><img src="/images/RDD队列流.png" alt="Github" title="RDD队列流"></p>
 <p><img src="/images/RDD队列流-2.png" alt="Github" title="结果"></p>
+<p>Spark也支持从兼容HDFS API的文件系统读取数据和通过Socket端口监听并接收数据，创建数据流。<br><img src="/images/RDD文件流.png" alt="Github" title="RDD文件流"></p>
 
     
   </div>
