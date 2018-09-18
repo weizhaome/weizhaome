@@ -7,28 +7,25 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Spark | Hexo</title>
+  <title>Spark Streaming | Hexo</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="Spark," />
+    <meta name="keywords" content="forsigner,前端,设计,Hexo主题,前端开发,用户体验,设计,frontend,design,nodejs,JavaScript" />
   
 
-  <meta name="description" content="Spark 笔记 Spark架构设计基本概念：  1.RDD:弹性分布式数据集，是分布式内存的一个抽象概念，提供了一种高度受限的共享内存模型。2.Executor:运行在工作节点（Worker Node）上的一个进程，负责运行任务，并为应用程序存储数据。3.DAG:有向无环图（Driected Acyclic Graph）,反映RDD之间的依赖关系（宽依赖和窄依赖）。4.应用：用户编写的Spark">
-<meta name="keywords" content="Spark">
+  <meta name="description" content="Spark Streaming Spark Streaming是构建在Spark上的实时计算框架，它扩展了Spark处理大规模流式数据的能力。Spark Streaming可结合批处理和交互查询，适合一些需要对历史数据和实时数据进行结合分析的应用场景。Spark Streaming最主要的抽象是DStream（Discretized Stream，离散化数据流），表示连续不断的数据流。在内部实现上">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Spark">
-<meta property="og:url" content="https://weizhaome.github.io/2018/09/17/Hive/index.html">
+<meta property="og:title" content="Spark Streaming">
+<meta property="og:url" content="https://weizhaome.github.io/2018/09/18/Spark-Streaming/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="Spark 笔记 Spark架构设计基本概念：  1.RDD:弹性分布式数据集，是分布式内存的一个抽象概念，提供了一种高度受限的共享内存模型。2.Executor:运行在工作节点（Worker Node）上的一个进程，负责运行任务，并为应用程序存储数据。3.DAG:有向无环图（Driected Acyclic Graph）,反映RDD之间的依赖关系（宽依赖和窄依赖）。4.应用：用户编写的Spark">
+<meta property="og:description" content="Spark Streaming Spark Streaming是构建在Spark上的实时计算框架，它扩展了Spark处理大规模流式数据的能力。Spark Streaming可结合批处理和交互查询，适合一些需要对历史数据和实时数据进行结合分析的应用场景。Spark Streaming最主要的抽象是DStream（Discretized Stream，离散化数据流），表示连续不断的数据流。在内部实现上">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://weizhaome.github.io/images/Spark-1.png">
-<meta property="og:updated_time" content="2018-09-18T03:44:05.080Z">
+<meta property="og:updated_time" content="2018-09-18T07:38:22.685Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Spark">
-<meta name="twitter:description" content="Spark 笔记 Spark架构设计基本概念：  1.RDD:弹性分布式数据集，是分布式内存的一个抽象概念，提供了一种高度受限的共享内存模型。2.Executor:运行在工作节点（Worker Node）上的一个进程，负责运行任务，并为应用程序存储数据。3.DAG:有向无环图（Driected Acyclic Graph）,反映RDD之间的依赖关系（宽依赖和窄依赖）。4.应用：用户编写的Spark">
-<meta name="twitter:image" content="https://weizhaome.github.io/images/Spark-1.png">
+<meta name="twitter:title" content="Spark Streaming">
+<meta name="twitter:description" content="Spark Streaming Spark Streaming是构建在Spark上的实时计算框架，它扩展了Spark处理大规模流式数据的能力。Spark Streaming可结合批处理和交互查询，适合一些需要对历史数据和实时数据进行结合分析的应用场景。Spark Streaming最主要的抽象是DStream（Discretized Stream，离散化数据流），表示连续不断的数据流。在内部实现上">
 
   
 
@@ -130,20 +127,20 @@
 
   <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Spark-笔记"><span class="toc-text">Spark 笔记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark架构设计"><span class="toc-text">Spark架构设计</span></a></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Spark-Streaming"><span class="toc-text">Spark Streaming</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-Streaming程序基本步骤"><span class="toc-text">Spark Streaming程序基本步骤</span></a></li></ol></li></ol>
   </div>
 
 
 
 <div class="content content-post CENTER">
-   <article id="post-Hive" class="article article-type-post" itemprop="blogPost">
+   <article id="post-Spark-Streaming" class="article article-type-post" itemprop="blogPost">
   <header class="article-header">
-    <h1 class="post-title">Spark</h1>
+    <h1 class="post-title">Spark Streaming</h1>
 
     <div class="article-meta">
       <span>
         <i class="icon-calendar"></i>
-        <span>2018.09.17</span>
+        <span>2018.09.18</span>
       </span>
 
       
@@ -159,7 +156,7 @@
       
         <span>
           <i class="icon-comment"></i>
-          <a href="https://weizhaome.github.io/2018/09/17/Hive/#disqus_thread"></a>
+          <a href="https://weizhaome.github.io/2018/09/18/Spark-Streaming/#disqus_thread"></a>
         </span>
       
 
@@ -176,15 +173,14 @@
 
   <div class="article-content">
     
-      <h1 id="Spark-笔记"><a href="#Spark-笔记" class="headerlink" title="Spark 笔记"></a>Spark 笔记</h1><ul>
-<li><h2 id="Spark架构设计"><a href="#Spark架构设计" class="headerlink" title="Spark架构设计"></a>Spark架构设计</h2><strong>基本概念：</strong></li>
-</ul>
-<p>1.RDD:弹性分布式数据集，是分布式内存的一个抽象概念，提供了一种高度受限的共享内存模型。<br>2.Executor:运行在工作节点（Worker Node）上的一个进程，负责运行任务，并为应用程序存储数据。<br>3.DAG:有向无环图（Driected Acyclic Graph）,反映RDD之间的依赖关系（宽依赖和窄依赖）。<br>4.应用：用户编写的Spark应用程序。<br>5.任务：运行在Exector的工作单元。<br>6.作业：一个作业包含多个RDD及作用在相应RDD上的各种操作。<br>7.阶段：是作业的基本调度单位，一个作业会分为多组任务，每组任务被成为”阶段“或者“任务集”。</p>
-<p><strong>架构图</strong></p>
-<p><img src="/images/Spark-1.png" alt="Github" title="Spark"></p>
-<p><strong>运行基本流程</strong></p>
-<p>1.当一个Spark应用被提交时，首先为这个应用构建起基本的运行环境，即由任务控制节点（Driver）创建一个SparkContext,由SparkContext负责和资源管理器（Cluster Manager）的通信以及资源的申请、任务的分配和监控等。SparkContext会向资源管理器注册并申请运行Executor的资源。<br>2.资源管理器为Executor分配资源，并启动Executor进程，Executor运行情况将随着“心跳”发送给资源管理器。<br>3.SparkContext根据RDD的依赖关系构建DAG图，DAG图提交给DAG调度器进行解析，将DAG图分解为多个“阶段”（每个阶段就是一个“任务集”），并且计算出各个阶段之间的依赖关系，然后把一个个“任务集”提交给底层的任务调度器进行处理，Executor向SparkContext申请任务，任务调度器将任务分发给Executor运行。同时，SparkContext将应用程序代码发给Executor。<br>4.任务在Executor上运行，把执行结构反馈给任务调度器，然后反馈给DAG调度器，运行完毕后写入数据并释放所有资源。</p>
-<p>参照：<a href="http://dblab.xmu.edu.cn/blog/1709-2/" target="_blank" rel="noopener">http://dblab.xmu.edu.cn/blog/1709-2/</a></p>
+      <h1 id="Spark-Streaming"><a href="#Spark-Streaming" class="headerlink" title="Spark Streaming"></a>Spark Streaming</h1><blockquote>
+<p>Spark Streaming是构建在Spark上的实时计算框架，它扩展了Spark处理大规模流式数据的能力。Spark Streaming可结合批处理和交互查询，适合一些需要对历史数据和实时数据进行结合分析的应用场景。Spark Streaming最主要的抽象是DStream（Discretized Stream，离散化数据流），表示连续不断的数据流。在内部实现上，Spark Streaming的输入数据按照时间片（如1秒）分成一段一段的DStream，每一段数据转换为Spark中的RDD，并且对DStream的操作都最终转变为对相应的RDD的操作。</p>
+</blockquote>
+<h2 id="Spark-Streaming程序基本步骤"><a href="#Spark-Streaming程序基本步骤" class="headerlink" title="Spark Streaming程序基本步骤"></a>Spark Streaming程序基本步骤</h2><p>1.通过创建输入DStream来定义输入源。</p>
+<p>2.通过对DStream应用转换操作和输出操作来定义流计算。</p>
+<p>3.用streamingContext.start()来开始接收数据和处理流程。</p>
+<p>4.通过streamingContext.awaitTermination()方法来等待处理结束（手动结束或因为错误而结束）。</p>
+<p>5.可以通过streamingContext.stop()来手动结束流计算进程。</p>
 
     
   </div>
@@ -215,10 +211,10 @@
 
    
   <div class="box-prev-next clearfix">
-    <a class="show pull-left" href="/2018/09/16/Hadoop-笔记/">
+    <a class="show pull-left" href="/2018/09/17/Hive/">
         <i class="icon icon-angle-left"></i>
     </a>
-    <a class="show pull-right" href="/2018/09/18/Spark-Streaming/">
+    <a class="hide pull-right" href="/">
         <i class="icon icon-angle-right"></i>
     </a>
   </div>
@@ -292,7 +288,7 @@
   <script>
     var disqus_shortname = 'forsigner';
     
-    var disqus_url = 'https://weizhaome.github.io/2018/09/17/Hive/';
+    var disqus_url = 'https://weizhaome.github.io/2018/09/18/Spark-Streaming/';
     
     (function(){
       var dsq = document.createElement('script');
