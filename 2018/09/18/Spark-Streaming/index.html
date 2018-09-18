@@ -22,10 +22,13 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Spark Streaming Spark Streaming是构建在Spark上的实时计算框架，它扩展了Spark处理大规模流式数据的能力。Spark Streaming可结合批处理和交互查询，适合一些需要对历史数据和实时数据进行结合分析的应用场景。Spark Streaming最主要的抽象是DStream（Discretized Stream，离散化数据流），表示连续不断的数据流。在内部实现上">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-18T07:38:22.685Z">
+<meta property="og:image" content="https://weizhaome.github.io/images/RDD队列流.png">
+<meta property="og:image" content="https://weizhaome.github.io/images/RDD队列流-2.png">
+<meta property="og:updated_time" content="2018-09-18T07:57:51.448Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark Streaming">
 <meta name="twitter:description" content="Spark Streaming Spark Streaming是构建在Spark上的实时计算框架，它扩展了Spark处理大规模流式数据的能力。Spark Streaming可结合批处理和交互查询，适合一些需要对历史数据和实时数据进行结合分析的应用场景。Spark Streaming最主要的抽象是DStream（Discretized Stream，离散化数据流），表示连续不断的数据流。在内部实现上">
+<meta name="twitter:image" content="https://weizhaome.github.io/images/RDD队列流.png">
 
   
 
@@ -127,7 +130,7 @@
 
   <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Spark-Streaming"><span class="toc-text">Spark Streaming</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-Streaming程序基本步骤"><span class="toc-text">Spark Streaming程序基本步骤</span></a></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Spark-Streaming"><span class="toc-text">Spark Streaming</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-Streaming程序基本步骤"><span class="toc-text">Spark Streaming程序基本步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RDD队列流"><span class="toc-text">RDD队列流</span></a></li></ol></li></ol>
   </div>
 
 
@@ -176,11 +179,19 @@
       <h1 id="Spark-Streaming"><a href="#Spark-Streaming" class="headerlink" title="Spark Streaming"></a>Spark Streaming</h1><blockquote>
 <p>Spark Streaming是构建在Spark上的实时计算框架，它扩展了Spark处理大规模流式数据的能力。Spark Streaming可结合批处理和交互查询，适合一些需要对历史数据和实时数据进行结合分析的应用场景。Spark Streaming最主要的抽象是DStream（Discretized Stream，离散化数据流），表示连续不断的数据流。在内部实现上，Spark Streaming的输入数据按照时间片（如1秒）分成一段一段的DStream，每一段数据转换为Spark中的RDD，并且对DStream的操作都最终转变为对相应的RDD的操作。</p>
 </blockquote>
-<h2 id="Spark-Streaming程序基本步骤"><a href="#Spark-Streaming程序基本步骤" class="headerlink" title="Spark Streaming程序基本步骤"></a>Spark Streaming程序基本步骤</h2><p>1.通过创建输入DStream来定义输入源。</p>
-<p>2.通过对DStream应用转换操作和输出操作来定义流计算。</p>
-<p>3.用streamingContext.start()来开始接收数据和处理流程。</p>
-<p>4.通过streamingContext.awaitTermination()方法来等待处理结束（手动结束或因为错误而结束）。</p>
-<p>5.可以通过streamingContext.stop()来手动结束流计算进程。</p>
+<h2 id="Spark-Streaming程序基本步骤"><a href="#Spark-Streaming程序基本步骤" class="headerlink" title="Spark Streaming程序基本步骤"></a>Spark Streaming程序基本步骤</h2><ol>
+<li>通过创建输入DStream来定义输入源。</li>
+<li>通过对DStream应用转换操作和输出操作来定义流计算。</li>
+<li>用streamingContext.start()来开始接收数据和处理流程。</li>
+<li>通过streamingContext.awaitTermination()方法来等待处理结束（手动结束或因为错误而结束）。</li>
+<li>可以通过streamingContext.stop()来手动结束流计算进程。<h2 id="RDD队列流"><a href="#RDD队列流" class="headerlink" title="RDD队列流"></a>RDD队列流</h2><blockquote>
+<p>在调试Spark Streaming应用程序的时候，我们可以使用streamingContext.queueStream(queueOfRDD)创建基于RDD队列的DStream。</p>
+</blockquote>
+</li>
+</ol>
+<p>下面是参考Spark官网的QueueStream程序设计的程序，每隔1秒创建一个RDD，Streaming每隔2秒就对数据进行处理。</p>
+<p><img src="/images/RDD队列流.png" alt="Github" title="RDD队列流"></p>
+<p><img src="/images/RDD队列流-2.png" alt="Github" title="结果"></p>
 
     
   </div>
