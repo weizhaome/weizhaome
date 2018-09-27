@@ -7,7 +7,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Spark Streaming | Hexo</title>
+  <title>Spark reduceByKey使用时遇到的问题 | Hexo</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -15,21 +15,22 @@
     <meta name="keywords" content="forsigner,前端,设计,Hexo主题,前端开发,用户体验,设计,frontend,design,nodejs,JavaScript" />
   
 
-  <meta name="description" content="Spark Streaming Spark Streaming是构建在Spark上的实时计算框架，它扩展了Spark处理大规模流式数据的能力。Spark Streaming可结合批处理和交互查询，适合一些需要对历史数据和实时数据进行结合分析的应用场景。Spark Streaming最主要的抽象是DStream（Discretized Stream，离散化数据流），表示连续不断的数据流。在内部实现上">
+  <meta name="description" content="reduceByKey(func)不会处理单一值的RDD reduceByKey(func)的功能是，使用func函数合并具有相同键的值。比如，reduceByKey((a,b) =&amp;gt; a+b)，有四个键值对(“spark”,1)、(“spark”,2)、(“hadoop”,3)和(“hadoop”,5)，对具有相同key的键值对进行合并后的结果就是：(“spark”,3)、(“hadoop">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Spark Streaming">
-<meta property="og:url" content="https://weizhaome.github.io/2018/09/18/Spark-Streaming/index.html">
+<meta property="og:title" content="Spark reduceByKey使用时遇到的问题">
+<meta property="og:url" content="https://weizhaome.github.io/2018/09/27/Spark-reduceByKey使用时遇到的问题/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="Spark Streaming Spark Streaming是构建在Spark上的实时计算框架，它扩展了Spark处理大规模流式数据的能力。Spark Streaming可结合批处理和交互查询，适合一些需要对历史数据和实时数据进行结合分析的应用场景。Spark Streaming最主要的抽象是DStream（Discretized Stream，离散化数据流），表示连续不断的数据流。在内部实现上">
+<meta property="og:description" content="reduceByKey(func)不会处理单一值的RDD reduceByKey(func)的功能是，使用func函数合并具有相同键的值。比如，reduceByKey((a,b) =&amp;gt; a+b)，有四个键值对(“spark”,1)、(“spark”,2)、(“hadoop”,3)和(“hadoop”,5)，对具有相同key的键值对进行合并后的结果就是：(“spark”,3)、(“hadoop">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://weizhaome.github.io/images/RDD队列流.png">
-<meta property="og:image" content="https://weizhaome.github.io/images/RDD队列流-2.png">
-<meta property="og:image" content="https://weizhaome.github.io/images/RDD文件流.png">
-<meta property="og:updated_time" content="2018-09-18T09:09:42.269Z">
+<meta property="og:image" content="https://weizhaome.github.io/images/reduceByKey-question/rawdata.jpg">
+<meta property="og:image" content="https://weizhaome.github.io/images/reduceByKey-question/FirstMap.jpg">
+<meta property="og:image" content="https://weizhaome.github.io/images/reduceByKey-question/reduceByKey.jpg">
+<meta property="og:image" content="https://weizhaome.github.io/images/reduceByKey-question/improve.jpg">
+<meta property="og:updated_time" content="2018-09-27T07:18:59.843Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Spark Streaming">
-<meta name="twitter:description" content="Spark Streaming Spark Streaming是构建在Spark上的实时计算框架，它扩展了Spark处理大规模流式数据的能力。Spark Streaming可结合批处理和交互查询，适合一些需要对历史数据和实时数据进行结合分析的应用场景。Spark Streaming最主要的抽象是DStream（Discretized Stream，离散化数据流），表示连续不断的数据流。在内部实现上">
-<meta name="twitter:image" content="https://weizhaome.github.io/images/RDD队列流.png">
+<meta name="twitter:title" content="Spark reduceByKey使用时遇到的问题">
+<meta name="twitter:description" content="reduceByKey(func)不会处理单一值的RDD reduceByKey(func)的功能是，使用func函数合并具有相同键的值。比如，reduceByKey((a,b) =&amp;gt; a+b)，有四个键值对(“spark”,1)、(“spark”,2)、(“hadoop”,3)和(“hadoop”,5)，对具有相同key的键值对进行合并后的结果就是：(“spark”,3)、(“hadoop">
+<meta name="twitter:image" content="https://weizhaome.github.io/images/reduceByKey-question/rawdata.jpg">
 
   
 
@@ -131,20 +132,20 @@
 
   <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Spark-Streaming"><span class="toc-text">Spark Streaming</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-Streaming程序基本步骤"><span class="toc-text">Spark Streaming程序基本步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RDD队列流"><span class="toc-text">RDD队列流</span></a></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#reduceByKey-func-不会处理单一值的RDD"><span class="toc-text">reduceByKey(func)不会处理单一值的RDD</span></a></li></ol>
   </div>
 
 
 
 <div class="content content-post CENTER">
-   <article id="post-Spark-Streaming" class="article article-type-post" itemprop="blogPost">
+   <article id="post-Spark-reduceByKey使用时遇到的问题" class="article article-type-post" itemprop="blogPost">
   <header class="article-header">
-    <h1 class="post-title">Spark Streaming</h1>
+    <h1 class="post-title">Spark reduceByKey使用时遇到的问题</h1>
 
     <div class="article-meta">
       <span>
         <i class="icon-calendar"></i>
-        <span>2018.09.18</span>
+        <span>2018.09.27</span>
       </span>
 
       
@@ -160,7 +161,7 @@
       
         <span>
           <i class="icon-comment"></i>
-          <a href="https://weizhaome.github.io/2018/09/18/Spark-Streaming/#disqus_thread"></a>
+          <a href="https://weizhaome.github.io/2018/09/27/Spark-reduceByKey使用时遇到的问题/#disqus_thread"></a>
         </span>
       
 
@@ -177,23 +178,31 @@
 
   <div class="article-content">
     
-      <h1 id="Spark-Streaming"><a href="#Spark-Streaming" class="headerlink" title="Spark Streaming"></a>Spark Streaming</h1><blockquote>
-<p>Spark Streaming是构建在Spark上的实时计算框架，它扩展了Spark处理大规模流式数据的能力。Spark Streaming可结合批处理和交互查询，适合一些需要对历史数据和实时数据进行结合分析的应用场景。Spark Streaming最主要的抽象是DStream（Discretized Stream，离散化数据流），表示连续不断的数据流。在内部实现上，Spark Streaming的输入数据按照时间片（如1秒）分成一段一段的DStream，每一段数据转换为Spark中的RDD，并且对DStream的操作都最终转变为对相应的RDD的操作。</p>
-</blockquote>
-<h2 id="Spark-Streaming程序基本步骤"><a href="#Spark-Streaming程序基本步骤" class="headerlink" title="Spark Streaming程序基本步骤"></a>Spark Streaming程序基本步骤</h2><ol>
-<li>通过创建输入DStream来定义输入源。</li>
-<li>通过对DStream应用转换操作和输出操作来定义流计算。</li>
-<li>用streamingContext.start()来开始接收数据和处理流程。</li>
-<li>通过streamingContext.awaitTermination()方法来等待处理结束（手动结束或因为错误而结束）。</li>
-<li>可以通过streamingContext.stop()来手动结束流计算进程。<h2 id="RDD队列流"><a href="#RDD队列流" class="headerlink" title="RDD队列流"></a>RDD队列流</h2><blockquote>
-<p>在调试Spark Streaming应用程序的时候，我们可以使用streamingContext.queueStream(queueOfRDD)创建基于RDD队列的DStream。</p>
-</blockquote>
+      <h1 id="reduceByKey-func-不会处理单一值的RDD"><a href="#reduceByKey-func-不会处理单一值的RDD" class="headerlink" title="reduceByKey(func)不会处理单一值的RDD"></a>reduceByKey(func)不会处理单一值的RDD</h1><ul>
+<li><p>reduceByKey(func)的功能是，使用func函数合并具有相同键的值。比如，reduceByKey((a,b) =&gt; a+b)，有四个键值对(“spark”,1)、(“spark”,2)、(“hadoop”,3)和(“hadoop”,5)，对具有相同key的键值对进行合并后的结果就是：(“spark”,3)、(“hadoop”,8)。</p>
 </li>
-</ol>
-<p>下面是参考Spark官网的QueueStream程序设计的程序，每隔1秒创建一个RDD，Streaming每隔2秒就对数据进行处理。</p>
-<p><img src="/images/RDD队列流.png" alt="Github" title="RDD队列流"></p>
-<p><img src="/images/RDD队列流-2.png" alt="Github" title="结果"></p>
-<p>Spark也支持从兼容HDFS API的文件系统读取数据和通过Socket端口监听并接收数据，创建数据流。<br><img src="/images/RDD文件流.png" alt="Github" title="RDD文件流"></p>
+<li><p><strong>但是，当reduceByKey(func)中的func函数对值进行split操作时，对于只有唯一值的RDD不会被split。下面使用创建的简单数据进行说明:</strong></p>
+</li>
+</ul>
+<blockquote>
+<p>统计原始数据中相同姓名都出现了哪些数字，原始数据如下图所示：</p>
+</blockquote>
+<p><img src="/images/reduceByKey-question/rawdata.jpg" alt="github"></p>
+<p>可以看到数据中姓名后面的数字中含有”\t”。</p>
+<blockquote>
+<p>读取文件数据并将其map成键值对的形式，得到的结果如下图所示：</p>
+</blockquote>
+<p><img src="/images/reduceByKey-question/FirstMap.jpg" alt="github"></p>
+<p>我们看到数据读入后”\t”变为”\t”,姓名成为键，后面的数字成为了值。</p>
+<blockquote>
+<p>使用reduceByKey合并相同姓名后面出现的数字，在这个过程中使用split(“\t”)对值进行切分。</p>
+</blockquote>
+<p><img src="/images/reduceByKey-question/reduceByKey.jpg" alt="github"></p>
+<p>从结果中可以看出，“xiaoguniang” 的值并没有被split.reduceByKey中不能对唯一值的RDD进行后面的func。也就是说当只有一个值的RDD出现时reduceByKey是不对其进行处理的。</p>
+<blockquote>
+<p>为此，为了达到想要的效果我们对代码进行改进，使用mapValue()对Value进行预处理，之后再进行reduceByKey()。</p>
+</blockquote>
+<p><img src="/images/reduceByKey-question/improve.jpg" alt="github"></p>
 
     
   </div>
@@ -224,10 +233,10 @@
 
    
   <div class="box-prev-next clearfix">
-    <a class="show pull-left" href="/2018/09/17/Hive/">
+    <a class="show pull-left" href="/2018/09/18/Spark-Streaming/">
         <i class="icon icon-angle-left"></i>
     </a>
-    <a class="show pull-right" href="/2018/09/27/Spark-reduceByKey使用时遇到的问题/">
+    <a class="hide pull-right" href="/">
         <i class="icon icon-angle-right"></i>
     </a>
   </div>
@@ -301,7 +310,7 @@
   <script>
     var disqus_shortname = 'forsigner';
     
-    var disqus_url = 'https://weizhaome.github.io/2018/09/18/Spark-Streaming/';
+    var disqus_url = 'https://weizhaome.github.io/2018/09/27/Spark-reduceByKey使用时遇到的问题/';
     
     (function(){
       var dsq = document.createElement('script');
