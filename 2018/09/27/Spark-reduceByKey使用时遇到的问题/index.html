@@ -26,7 +26,7 @@
 <meta property="og:image" content="https://weizhaome.github.io/images/reduceByKey-question/FirstMap.jpg">
 <meta property="og:image" content="https://weizhaome.github.io/images/reduceByKey-question/reduceByKey.jpg">
 <meta property="og:image" content="https://weizhaome.github.io/images/reduceByKey-question/improve.jpg">
-<meta property="og:updated_time" content="2018-09-27T07:18:59.843Z">
+<meta property="og:updated_time" content="2019-03-09T13:39:43.057Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark reduceByKey使用时遇到的问题">
 <meta name="twitter:description" content="reduceByKey(func)不会处理单一值的RDD reduceByKey(func)的功能是，使用func函数合并具有相同键的值。比如，reduceByKey((a,b) =&amp;gt; a+b)，有四个键值对(“spark”,1)、(“spark”,2)、(“hadoop”,3)和(“hadoop”,5)，对具有相同key的键值对进行合并后的结果就是：(“spark”,3)、(“hadoop">
@@ -193,7 +193,7 @@
 <p>读取文件数据并将其map成键值对的形式，得到的结果如下图所示：</p>
 </blockquote>
 <p><img src="/images/reduceByKey-question/FirstMap.jpg" alt="github"></p>
-<p>我们看到数据读入后”\t”变为”\t”,姓名成为键，后面的数字成为了值。</p>
+<p>我们看到数据读入后”\t”变为”\\t”,姓名成为键，后面的数字成为了值。</p>
 <blockquote>
 <p>使用reduceByKey合并相同姓名后面出现的数字，在这个过程中使用split(“\t”)对值进行切分。</p>
 </blockquote>
