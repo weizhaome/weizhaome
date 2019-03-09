@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hadoop 笔记 | Hexo</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="BigData," />
+  
+
+  <meta name="description" content="Hadoop基础 是什么 Hadoop是Apache开源组织的一个分布式计算开源框架（http://hadoop.apache.org/)， 能够实现集群中对海量数据进行分布式计算。   Hadoop架构 HDFS: 提供对应用程序数据高吞吐量访问的分布式文件系统。 YARN: 作业调度和集群资源管理的框架 MapReduce: 基于YARN的大型数据集并行处理系统，实现分布式计算。 Others">
+<meta name="keywords" content="BigData">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hadoop 笔记">
+<meta property="og:url" content="https://weizhaome.github.io/2018/09/16/Hadoop-笔记/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Hadoop基础 是什么 Hadoop是Apache开源组织的一个分布式计算开源框架（http://hadoop.apache.org/)， 能够实现集群中对海量数据进行分布式计算。   Hadoop架构 HDFS: 提供对应用程序数据高吞吐量访问的分布式文件系统。 YARN: 作业调度和集群资源管理的框架 MapReduce: 基于YARN的大型数据集并行处理系统，实现分布式计算。 Others">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://weizhaome.github.io/images/Hadoop.png">
+<meta property="og:image" content="https://weizhaome.github.io/images/YARN.png">
+<meta property="og:image" content="https://weizhaome.github.io/images/MapReduce.png">
+<meta property="og:updated_time" content="2018-09-17T11:58:12.858Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hadoop 笔记">
+<meta name="twitter:description" content="Hadoop基础 是什么 Hadoop是Apache开源组织的一个分布式计算开源框架（http://hadoop.apache.org/)， 能够实现集群中对海量数据进行分布式计算。   Hadoop架构 HDFS: 提供对应用程序数据高吞吐量访问的分布式文件系统。 YARN: 作业调度和集群资源管理的框架 MapReduce: 基于YARN的大型数据集并行处理系统，实现分布式计算。 Others">
+<meta name="twitter:image" content="https://weizhaome.github.io/images/Hadoop.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cben" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hadoop基础"><span class="toc-text">Hadoop基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#是什么"><span class="toc-text">是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hadoop架构"><span class="toc-text">Hadoop架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HDFS的关键元素"><span class="toc-text">HDFS的关键元素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#YARN的组件以及架构"><span class="toc-text">YARN的组件以及架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#YARN主要由以下几个组件组成："><span class="toc-text">YARN主要由以下几个组件组成：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MapReduce主要过程"><span class="toc-text">MapReduce主要过程</span></a></li></ol></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-Hadoop-笔记" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Hadoop 笔记</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2018.09.16</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>weizhao</span>
+        </span>
+      
+
+      
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="https://weizhaome.github.io/2018/09/16/Hadoop-笔记/#disqus_thread"></a>
+        </span>
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="Hadoop基础"><a href="#Hadoop基础" class="headerlink" title="Hadoop基础"></a>Hadoop基础</h1><ul>
+<li><h2 id="是什么"><a href="#是什么" class="headerlink" title="是什么"></a>是什么</h2><blockquote>
+<p>Hadoop是Apache开源组织的一个分布式计算开源框架（<a href="http://hadoop.apache.org/)，" target="_blank" rel="noopener">http://hadoop.apache.org/)，</a> 能够实现集群中对海量数据进行分布式计算。</p>
+</blockquote>
+</li>
+<li><h2 id="Hadoop架构"><a href="#Hadoop架构" class="headerlink" title="Hadoop架构"></a>Hadoop架构</h2><img src="/images/Hadoop.png" alt="Github"></li>
+<li>HDFS: 提供对应用程序数据高吞吐量访问的分布式文件系统。</li>
+<li>YARN: 作业调度和集群资源管理的框架</li>
+<li>MapReduce: 基于YARN的大型数据集并行处理系统，实现分布式计算。</li>
+<li>Others:利用YARN的资源管理功能实现其他的数据处理方式。<h3 id="HDFS的关键元素"><a href="#HDFS的关键元素" class="headerlink" title="HDFS的关键元素"></a>HDFS的关键元素</h3></li>
+</ul>
+<ol>
+<li>Block：将一个文件进行分块，通常是64M。一个大文件会被拆分成一个个的块，然后存储于不同的机器。如果一个文件少于Block大小，那么实际占用的空间为其文件的大小。</li>
+<li>NameNode: 保存整个文件系统的目录信息、文件信息及分块信息，这是由唯一一台主机专门保存，当然这台主机如果出错，NameNode就失效了。在Hadoop2.*开始支持activity-standy模式—-如果主NameNode失效，启动备用主机运行NameNode。</li>
+<li>DataNode: 保存具体的block数据,负责数据的读写操作和复制操作,DataNode启动时会向NameNode报告当前存储的数据块信息，后续也会定时报告修改信息,DataNode之间会进行通信，复制数据块，保证数据的冗余性。</li>
+<li>Secondary NameNode：定时与NameNode进行同步（定期合并文件系统镜像和编辑日&amp;#x#x5FD7;，然后把合并后的传给NameNode，替换其镜像，并清空编辑日志，类似于CheckPoint机制），但NameNode失效后仍需要手工将其设置成主机。<h3 id="YARN的组件以及架构"><a href="#YARN的组件以及架构" class="headerlink" title="YARN的组件以及架构"></a>YARN的组件以及架构</h3><h4 id="YARN主要由以下几个组件组成："><a href="#YARN主要由以下几个组件组成：" class="headerlink" title="YARN主要由以下几个组件组成："></a>YARN主要由以下几个组件组成：</h4><blockquote>
+<ol>
+<li>ResourceManager：Global（全局）的进程 </li>
+<li>NodeManager：运行在每个节点上的进程</li>
+<li>ApplicationMaster：Application-specific（应用级别）的进程</li>
+</ol>
+<ul>
+<li><em>Scheduler：是ResourceManager的一个组件</em></li>
+<li><em>Container：节点上一组CPU和内存资源</em></li>
+</ul>
+</blockquote>
+</li>
+</ol>
+<ul>
+<li>YARN的架构图及流程</li>
+</ul>
+<p><img src="/images/YARN.png" alt="Github" title="YARN"></p>
+<p>1.客户端程序向ResourceManager提交应用并请求一个ApplicationMaster实例</p>
+<p>2.ResourceManager找到可以运行一个Container的NodeManager，并在这个Container中启动ApplicationMaster实例</p>
+<p>3.ApplicationMaster向ResourceManager进行注册，注册之后客户端就可以查询ResourceManager获得自己ApplicationMaster的详细信息，以后就可以和自己的ApplicationMaster直接交互了</p>
+<p>4.在平常的操作过程中，ApplicationMaster根据resource-request协议向ResourceManager发送resource-request请求</p>
+<p>5.当Container被成功分配之后，ApplicationMaster通过向NodeManager发送container-launch-specification信息来启动Container， container-launch-specification信息包含了能够让Container和ApplicationMaster交流所需要的资料</p>
+<p>6.应用程序的代码在启动的Container中运行，并把运行的进度、状态等信息通过application-specific协议发送给ApplicationMaster</p>
+<p>7.在应用程序运行期间，提交应用的客户端主动和ApplicationMaster交流获得应用的运行状态、进度更新等信息，交流的协议也是application-specific协议</p>
+<p>8.一但应用程序执行完成并且所有相关工作也已经完成，ApplicationMaster向ResourceManager取消注册然后关闭，用到所有的Container也归还给系统<br>详情请见：<a href="https://blog.csdn.net/suifeng3051/article/details/49486927" target="_blank" rel="noopener">https://blog.csdn.net/suifeng3051/article/details/49486927</a></p>
+<h3 id="MapReduce主要过程"><a href="#MapReduce主要过程" class="headerlink" title="MapReduce主要过程"></a>MapReduce主要过程</h3><p>MapReduce把一个任务拆分成了多个小任务，并把子任务分配到多台计算机上进行工作。最终，每台计算机上的计算结果会被搜集起来并合并成最终的结果。在Map阶段将数据集的键值对映射为另一组键值对。Reduce阶段得到Map的输出，并把具有相同键的数据合并成一个更小的键值对数据集。<br><img src="/images/MapReduce.png" alt="Github" title="MapReduce"></p>
+<ul>
+<li>Input Phase: 使用一个Record Reader将输入文件中的每一条数据转换为键值对的形式，并把这些处理好的数据发送给Mapper。</li>
+<li>Map: Map是是用户自定义的一个函数，此函数接收一系列的键值对数据并对它们进行处理，最后生成0个或多个键值对数据。</li>
+<li>Intermediate Keys: 由mapper生成的键值对数据被称为中间状态的键值对。</li>
+<li>Shuffle and Sort: Reducer任务通常以Shuffle（搅动）和Sort（排序）开始。程序把分好组的键值对数据下载到本机，Reducer会在本机进行运行。这些独立的键值对数据会按照键值进行排序并形成一个较大的数据序列，数据序列中键值相等的键值对数据会被分在相同的一组，这样易于在Reducer任务中进行迭代操作。</li>
+<li>Reducer:Reducer任务把分好组的键值对数据作为输入，并且对每一个键值对都执行Reducer函数。在这个阶段，程序会以不同的方式对数据进行合并、筛选。一旦执行完毕，Reducer会生成0个或多个键值对数据，并提供给最后一个处理步骤。</li>
+<li>Output Phase: 在输出阶段，通过record writer把从Reducer函数输出的键值对数据按照一定的格式写入到文件中。<br>参考：<a href="https://www.jianshu.com/p/6162b787a428" target="_blank" rel="noopener">https://www.jianshu.com/p/6162b787a428</a></li>
+</ul>
+
+    
+  </div>
+
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持forsigner</div>
+        <ul>
+        
+          <li class="item">
+            
+              <span>支付宝扫一扫</span>
+            
+            <img src="/images/qr-alipay.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="hide pull-left" href="/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2018/09/17/Hive/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+
+   
+      <div class="git"></div>
+   
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'https://weizhaome.github.io/2018/09/16/Hadoop-笔记/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
