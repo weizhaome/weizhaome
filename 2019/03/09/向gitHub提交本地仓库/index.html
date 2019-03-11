@@ -22,7 +22,7 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="如果需要将本地生成的工程提交到github相应的仓库中的步骤如下： 1、在github上新建立相应的仓库名称，比如：blog。   2、cd到本地工程的根目录下。   3、使用命令：git inint 初始化本地仓库。   4、使用命令：git add ××× 添加要提交到github远程仓库的文件或者文件夹，如果全部提交可以使用：git add . 。   5、git commit -m “备注">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-03-10T01:19:44.281Z">
+<meta property="og:updated_time" content="2019-03-11T01:03:21.227Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="向github提交本地仓库">
 <meta name="twitter:description" content="如果需要将本地生成的工程提交到github相应的仓库中的步骤如下： 1、在github上新建立相应的仓库名称，比如：blog。   2、cd到本地工程的根目录下。   3、使用命令：git inint 初始化本地仓库。   4、使用命令：git add ××× 添加要提交到github远程仓库的文件或者文件夹，如果全部提交可以使用：git add . 。   5、git commit -m “备注">
@@ -127,7 +127,7 @@
 
   <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#如果需要将本地生成的工程提交到github相应的仓库中的步骤如下："><span class="toc-text">如果需要将本地生成的工程提交到github相应的仓库中的步骤如下：</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#如果需要将本地生成的工程提交到github相应的仓库中的步骤如下："><span class="toc-text">如果需要将本地生成的工程提交到github相应的仓库中的步骤如下：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#遇见的问题："><span class="toc-text">遇见的问题：</span></a></li></ol>
   </div>
 
 
@@ -183,16 +183,29 @@
 <p>3、使用命令：git inint 初始化本地仓库。</p>
 </blockquote>
 <blockquote>
-<p>4、使用命令：git add ××× 添加要提交到github远程仓库的文件或者文件夹，如果全部提交可以使用：git add . 。</p>
+<p>4、使用命令：git add ××× 添加要提交到github远程仓库的文件或者文件<br>夹，如果全部提交可以使用：git add . 。</p>
 </blockquote>
 <blockquote>
-<p>5、git commit -m “备注”</p>
+<p>5、git commit -m “备注”。</p>
 </blockquote>
 <blockquote>
 <p>6、git remote add origin <a href="https://github.com/weizhaome/blog" target="_blank" rel="noopener">https://github.com/weizhaome/blog</a> 建立远程仓库链接。</p>
 </blockquote>
 <blockquote>
 <p>7、最后使用 git push -u origin master 就可以将本地工程提交到github上了。</p>
+</blockquote>
+<h2 id="遇见的问题："><a href="#遇见的问题：" class="headerlink" title="遇见的问题："></a>遇见的问题：</h2><blockquote>
+<p>1、当github远程仓库中存在本地仓库所不存在的文件时需要先将两部分进行合并：git pull –rebase origin master 之后再执行push操作。</p>
+</blockquote>
+<blockquote>
+<p>2、Push 一直提示 “Permission denied (publickey) “ , 这个可能是由于你的没有目标仓库和分支的权限，导致无法更新数据。</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>确认 push 方式，如果是 SSH 方式请检查你的 SSH 公钥是否正确（如果您有多个私钥，请使用 ssh-add 命令来指定默认使用的私钥）； HTTPS 方式检查密码及用户名是否正确。</li>
+<li>对目标分支是否有写权限。</li>
+<li>善用 搜索。</li>
+</ul>
 </blockquote>
 
     
