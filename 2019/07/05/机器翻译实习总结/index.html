@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>机器翻译实习总结 | Hexo</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="forsigner,前端,设计,Hexo主题,前端开发,用户体验,设计,frontend,design,nodejs,JavaScript" />
+  
+
+  <meta name="description" content="机器翻译（中英）实习总结2015年5月-7月参与机器翻译项目，接下来将对这两个月的收获进行总结。 Transform模型的理解 谷歌提出的transformer模型，使用self-attention层和全连接层实现了很好的机器翻译BLEU结果，没有采用传统的RNN/LSTM/GRU结构，解决了长依赖和训练并行度问题，降低了计算的复杂度。关于论文的详细讲解可以参考：https://www.jians">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器翻译实习总结">
+<meta property="og:url" content="https://weizhaome.github.io/2019/07/05/机器翻译实习总结/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="机器翻译（中英）实习总结2015年5月-7月参与机器翻译项目，接下来将对这两个月的收获进行总结。 Transform模型的理解 谷歌提出的transformer模型，使用self-attention层和全连接层实现了很好的机器翻译BLEU结果，没有采用传统的RNN/LSTM/GRU结构，解决了长依赖和训练并行度问题，降低了计算的复杂度。关于论文的详细讲解可以参考：https://www.jians">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://weizhaome.github.io/images/nmt/Attention.png">
+<meta property="og:image" content="https://weizhaome.github.io/images/nmt/self-attention.png">
+<meta property="og:image" content="https://weizhaome.github.io/images/nmt/transformer-function.png">
+<meta property="og:image" content="https://weizhaome.github.io/images/nmt/API.png">
+<meta property="og:image" content="https://weizhaome.github.io/images/nmt/stdout.png">
+<meta property="og:updated_time" content="2019-07-05T11:14:21.271Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="机器翻译实习总结">
+<meta name="twitter:description" content="机器翻译（中英）实习总结2015年5月-7月参与机器翻译项目，接下来将对这两个月的收获进行总结。 Transform模型的理解 谷歌提出的transformer模型，使用self-attention层和全连接层实现了很好的机器翻译BLEU结果，没有采用传统的RNN/LSTM/GRU结构，解决了长依赖和训练并行度问题，降低了计算的复杂度。关于论文的详细讲解可以参考：https://www.jians">
+<meta name="twitter:image" content="https://weizhaome.github.io/images/nmt/Attention.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cben" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#机器翻译（中英）实习总结"><span class="toc-text">机器翻译（中英）实习总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Transform模型的理解"><span class="toc-text">Transform模型的理解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shell命令总结"><span class="toc-text">shell命令总结</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-机器翻译实习总结" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">机器翻译实习总结</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2019.07.05</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>weizhao</span>
+        </span>
+      
+
+      
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="https://weizhaome.github.io/2019/07/05/机器翻译实习总结/#disqus_thread"></a>
+        </span>
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="机器翻译（中英）实习总结"><a href="#机器翻译（中英）实习总结" class="headerlink" title="机器翻译（中英）实习总结"></a>机器翻译（中英）实习总结</h1><p>2015年5月-7月参与机器翻译项目，接下来将对这两个月的收获进行总结。</p>
+<h2 id="Transform模型的理解"><a href="#Transform模型的理解" class="headerlink" title="Transform模型的理解"></a>Transform模型的理解</h2><blockquote>
+<p>谷歌提出的transformer模型，使用self-attention层和全连接层实现了很好的机器翻译BLEU结果，没有采用传统的RNN/LSTM/GRU结构，解决了长依赖和训练并行度问题，降低了计算的复杂度。关于论文的详细讲解可以参考：<a href="https://www.jianshu.com/p/ef41302edeef等的讲解。" target="_blank" rel="noopener">https://www.jianshu.com/p/ef41302edeef等的讲解。</a></p>
+<ul>
+<li><strong>Attention机制</strong><br><strong> 简介:</strong><br>在传统的encoder-decoder模型中，对于句子对&lt;X,Y&gt;,，我们输入给定句子X=&lt;x1,x2…xm&gt; 经过encoder进行编码后转化为中间语义表示为C=F(x<sub>1</sub>,x<sub>2</sub>…x<sub>m</sub>)，解码器decoder的任务是根据句子的中间语义表示C和之前已经生成的历史信息y<sub>1</sub>,y<sub>2</sub>…y<sub>i-1</sub>)来生成i时刻要生成的单词yi=G(C,y<sub>1</sub>,y<sub>2</sub>…y<sub>i-1</sub>)。<br>这样的框架因为对于预测每一个yi对应的语义编码C都是一样的，无法完全表示整个序列的信息，而且先输入的内容携带的信息会被后面的信息覆盖掉。attention机制将用来解决该问题，在预测时不仅关注全局语义编码向量C，而且增加‘注意力范围’，来表示接下来输出词时候要重点关注输入序列的哪些部分。<br><img src="/images/nmt/Attention.png" alt="attention"><br>此时生成目标句子单词的过程就成了下面的形式:<br>y<sub>1</sub>=f1(C<sub>1</sub>)<br>y<sub>2</sub>=f1(C<sub>2</sub>,y<sub>1</sub>)<br>y<sub>3</sub>=f1(C<sub>3</sub>,y<sub>1</sub>,y<sub>2</sub>)<br><strong>计算过程：</strong>1、计算encoder每个结点与decoderd当前结点的Score值：<br>[s1,s2,s3,s4]=softmax(dot([x1,x2,x3,x4],yi-1))<br>2、当前结点的语义编码为Ci=s1*x1+s2*x2+s3*x3+s4*x4</li>
+<li><strong>self-attention机制</strong><br>self-attention是attention机制的一种，attention是输入输出的权重，而self-attention是自己对自己的权重，计算公式如下图：<br><img src="/images/nmt/self-attention.png" alt="self-attention"><br>Q(queries)，K (keys) and V(Values)， 其中 Key and values 一般对应同样的 vector， K=V 而Query vecotor  是对应目标句子的 word vector。</li>
+<li><strong>论文代码的理解</strong><br>所查看的代码使用tensorflow框架，其各个函数的调用以及参数传递如下图：<br><img src="/images/nmt/transformer-function.png" alt="transformer"><br>这里使用了TensorFlow中的高级API：Estimator、Experiment,具体讲解可以参考：<a href="https://www.jiqizhixin.com/articles/2017090901" target="_blank" rel="noopener">https://www.jiqizhixin.com/articles/2017090901</a></li>
+</ul>
+</blockquote>
+<p><img src="/images/nmt/API.png" alt="API">  </p>
+<h2 id="shell命令总结"><a href="#shell命令总结" class="headerlink" title="shell命令总结"></a>shell命令总结</h2><p>语料库中包含两千多万条训练数据，经过了一系列的过滤得到一个干净整洁的训练预料。在过程中主要用shell对其进行处理，提高处理的速度和效率。接下来将对过程中使用到的shell命令进行总结。</p>
+<ul>
+<li><strong>awk</strong><br>awk用来对文本进行较复杂格式处理,<a href="https://www.cnblogs.com/silence-hust/p/4534606.html" target="_blank" rel="noopener">https://www.cnblogs.com/silence-hust/p/4534606.html</a> 中对awk做了较为详细的汇总。<blockquote>
+<p>1、统计英文文本中每行的单词个数可以用命令：<br>awk -F ‘ ‘ ‘BEGIN{print “count”, “lineNum”}{print NF “\t” NR}’ filename 其中，-F 表示分隔符，NF是awk的内置函数表示读取记录的域的个数，NR表示已经读取的记录数，文件的每行相当于记录，文件的每个字段，也就是每个单词相当于记录的域。其中BEGIN后面所跟的命令只会在遍历文件前执行一次，END命令也会在遍历完文件后执行一次。<br>2、删除英文文本中单词数量少于5的行可以用命令：<br>awk -F ‘ ‘ ‘{if (NF &lt; 5) {next} {print}}’ filename 其中，if会用来做判断，如果满足条件将会调用{next}直接跳到下一行，如果不满足会执行{print}输出当前行。<br>3、awk ‘!a[$0]++’ filename 将会去除文件中重复的行，’!’表示非，$0表示当前行，a[$0]以当前行为数据下标建立数组a,a[$0]++表示给数组a赋值，a[$0]+=1。详细解释可以参照：<a href="https://www.cnblogs.com/irockcode/p/7044646.html" target="_blank" rel="noopener">https://www.cnblogs.com/irockcode/p/7044646.html</a>  </p>
+</blockquote>
+</li>
+<li><strong>grep</strong><br>grep更适合单纯的查找和匹配文本， <a href="https://blog.csdn.net/liupeifeng3514/article/details/79880878" target="_blank" rel="noopener">https://blog.csdn.net/liupeifeng3514/article/details/79880878</a> 中对grep命令做了详细的介绍。<blockquote>
+<p>1、统计出现文本中出现某种模式n词以上的行：grep -E ‘(pattern){n,}’ filename 其中-E表示使用正则表达式，(pattern)是要找的某种模式，用正则表达式进行匹配，{n,}表示连续出现n次以上。<br>2、grep -f file1 file2 过滤掉文件2中包含文件1的内容。 如果添加 -v 可以实现反向输出，即可以输出两个文件重复的行。</p>
+</blockquote>
+</li>
+<li><strong>shell效率问题</strong><br>因为数据量在千万级，所以一个好的处理策略要比处理工具更加重要，本次项目是中-英的机器翻译，所以在对数据筛选时要同时兼顾两个文件，即源端数据文本和目标端数据文本，在去重的过程中一开始的想法是将源段出现重复和行号找出后保存在文件中，之后删除目标段对应的行，但速度会很慢。<br>后来利用paste 先将两个文件用TAB作为分隔符左右拼接起来：<br>paste -d\t file1 file2 &gt; tempfile<br>之后利用awk去除重复行：<br>awk -F ‘\t’ ‘!a[$1]++’ tempfile &gt; uniqfile 这里的$1表示第一列即源段文本。<br>最后用cut将其分开。<br>后来看到了<a href="https://blog.csdn.net/dubendi/article/details/79103170，关于如何提高shell效率的博客。" target="_blank" rel="noopener">https://blog.csdn.net/dubendi/article/details/79103170，关于如何提高shell效率的博客。</a></li>
+<li><strong>shell输出重定向</strong><br><img src="/images/nmt/stdout.png" alt="stdout"><br>在此次项目中原始训练集在一个文件中，按照一行源段，一行目标端，一行空格来放。所以首要任务是将其分成两个文件，这里利用重定向写了一小段shell脚本：<pre><code class="#!/usr/bin/perl">$n=0;
+while(&lt;&gt;){
+chomp();
+if($n%3==0){print STDOUT &quot;$_\n&quot;;}
+if($n%3==1){print STDERR &quot;$_\n&quot;;}
+$n+=1;
+}
+</code></pre>
+初始化变量n,用来表示读取的是源段还会目标端的行，按行读取文件，当是空行时用chomp()删除改行，如果不是判断n是否能被3整除，如果可以的话用标准输出将其输出，如果不是的话用标准错误输出将其输出，最后在命令行运行该脚本：$./vcut.pl sg-mt.txt 2&gt; train.en 1&gt; train.zh 实现将两中文本分开。</li>
+</ul>
+
+    
+  </div>
+
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持forsigner</div>
+        <ul>
+        
+          <li class="item">
+            
+              <span>支付宝扫一扫</span>
+            
+            <img src="/images/qr-alipay.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2019/04/16/常见排序算法总结/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+
+   
+      <div class="git"></div>
+   
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'https://weizhaome.github.io/2019/07/05/机器翻译实习总结/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
