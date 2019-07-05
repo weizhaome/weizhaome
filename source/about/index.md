@@ -9,6 +9,8 @@ date: 2018-09-16 21:42:57
 
 > 外语水平：CET6
 
+> 政治面貌：党员
+
 > 邮箱： zhao_wei@tju.edu.cn
 
 > 硕士就读于天津大学（985）计算机技术专业（2017至今）
@@ -24,6 +26,11 @@ date: 2018-09-16 21:42:57
    2018.09 | A brief review on software tools in generating Chou’s pseudo-factor representations for all types of biological sequences  | 一作 | SCI四区
    2019.02 | Predicting protein sub-Golgi locations by combining functional domain enrichment scores with pseudo-amino acid compositions  | 一作 | SCI四区在投
    
+- **项目经历**
+
+> 1、2019.05-至今，在慧言科技（天津）有限公司实习，参与机器翻译项目，编写shell脚本程序对有千万级数据量的语料库进行清洗，并利用深度学习算法训练和测试机器翻译模型，实现对现有机器翻译模型的优化和升级；
+
+> 2、利用flask框架构建蛋白质亚细胞位点预测网站，用户向网站提交蛋白质序列后，网站将对该蛋白质序列的亚细胞核、亚线粒体、亚叶绿体以及亚高尔基体位点进行预测，并将结果返回给用户。
 - **所获证书**
 
 > 1、2016-2017学年： 获得“三好学生”荣誉称号；“国家励志”奖学金；
@@ -43,4 +50,3 @@ date: 2018-09-16 21:42:57
 > 1、2018.03-2018.07，在天津大学担任C++课程助教，协助老师完成学生上机实验并在过程中解决学生遇到的问题；
 
 > 2、2015.09-2016.09，在东北林业大学教育超市丹青分店担任收银员，让自己的耐心和细心都有所提高。
-   

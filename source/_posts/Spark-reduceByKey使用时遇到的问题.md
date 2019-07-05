@@ -19,7 +19,7 @@ tags:
 
 ![github](/images/reduceByKey-question/FirstMap.jpg)
 
-我们看到数据读入后"\t"变为"\\t",姓名成为键，后面的数字成为了值。
+我们看到数据读入后"\t"变为"\\\t",姓名成为键，后面的数字成为了值。
 
 > 使用reduceByKey合并相同姓名后面出现的数字，在这个过程中使用split("\\t")对值进行切分。
 
