@@ -22,7 +22,7 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Python类的继承定义一个父类Person:   class Person(object):     def __init__(self,name,sex):         self.name = name         self.sex = sex     def print_title(self):         if self.sex == &amp;quot;male&amp;quot;:">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-10-05T13:49:58.589Z">
+<meta property="og:updated_time" content="2019-10-05T14:11:04.216Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python的继承和多态">
 <meta name="twitter:description" content="Python类的继承定义一个父类Person:   class Person(object):     def __init__(self,name,sex):         self.name = name         self.sex = sex     def print_title(self):         if self.sex == &amp;quot;male&amp;quot;:">
@@ -127,7 +127,7 @@
 
   <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Python类的继承"><span class="toc-text">Python类的继承</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Python两个判断继承的函数：isinstance-和issubclass"><span class="toc-text">Python两个判断继承的函数：isinstance()和issubclass()</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Python类的多态"><span class="toc-text">Python类的多态</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Python类的继承"><span class="toc-text">Python类的继承</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Python两个判断继承的函数：isinstance-和issubclass"><span class="toc-text">Python两个判断继承的函数：isinstance()和issubclass()</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Python类的多态"><span class="toc-text">Python类的多态</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Python使用下划线作为变量前缀和后缀制定特殊方法-变量"><span class="toc-text">Python使用下划线作为变量前缀和后缀制定特殊方法/变量</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Python的构造函数-new-和初始化函数-init"><span class="toc-text">Python的构造函数__new__()和初始化函数__init__()</span></a></li></ol>
   </div>
 
 
@@ -201,7 +201,18 @@ issubclass(Child,Person)==True
             print(&quot;boy&quot;)
         elif self.sex == &quot;female&quot;:
             print(&quot;girl&quot;)
-</code></pre>
+</code></pre><h1 id="Python使用下划线作为变量前缀和后缀制定特殊方法-变量"><a href="#Python使用下划线作为变量前缀和后缀制定特殊方法-变量" class="headerlink" title="Python使用下划线作为变量前缀和后缀制定特殊方法/变量"></a>Python使用下划线作为变量前缀和后缀制定特殊方法/变量</h1><ul>
+<li>__foo被看作是类”私有的“，类外和子类都不能访问，不能用‘from module import *’导入，只能通过类对象访问。</li>
+<li>_foo 被看作是类”受保护的“，只有类对象和子类对象自己能访问，不能通过‘from module import *’导入。</li>
+<li>__foo__ 代表Python里特殊方法专用标识。</li>
+</ul>
+<h1 id="Python的构造函数-new-和初始化函数-init"><a href="#Python的构造函数-new-和初始化函数-init" class="headerlink" title="Python的构造函数__new__()和初始化函数__init__()"></a>Python的构造函数__new__()和初始化函数__init__()</h1><ul>
+<li><p>“__new__(cls,<em>args,**kargs)“方法在Python中是真正的构造方法（创建并返回实例），是在类实例化对象时第一个调用的方法，将返回实例对象，通过这个方法可以产生一个”cls”对应的实例对象，所以说”__ new__(cls,</em>args,**kargs)”方法一定要有返回</p>
+</li>
+<li><p>对于”__ init__ (self,<em>args,**kwags)“方法，是一个初始化的方法，“self”代表由类产生出来的实例对象，” __init__(self,</em>args,**kwags)”将对这个对象进行相应的初始化操作。</p>
+</li>
+</ul>
+
     
   </div>
 
