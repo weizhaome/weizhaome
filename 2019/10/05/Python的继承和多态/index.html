@@ -7,7 +7,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>python可变数据类型和不可变数据类型 | Hexo</title>
+  <title>Python的继承和多态 | Hexo</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -15,17 +15,17 @@
     <meta name="keywords" content="forsigner,前端,设计,Hexo主题,前端开发,用户体验,设计,frontend,design,nodejs,JavaScript" />
   
 
-  <meta name="description" content="Python的可变数据类型和不可变数据类型：可变数据类型：list：数组是有序的，dict:字典是无序的，多次print一个数组得到的字典顺序可能不一样，可变的set：集合是无序不重复的。Python在声明可变类型后再次声明同样内容的可变类型时，Python会重新申请空间对其进行存储。例如：a=[1,2,3],b=[1,2,3],a is b False， a==b True。is可以用来判断两个">
+  <meta name="description" content="Python类的继承定义一个父类Person:   class Person(object):     def __init__(self,name,sex):         self.name = name         self.sex = sex     def print_title(self):         if self.sex == &amp;quot;male&amp;quot;:">
 <meta property="og:type" content="article">
-<meta property="og:title" content="python可变数据类型和不可变数据类型">
-<meta property="og:url" content="https://weizhaome.github.io/2019/09/25/python可变数据类型和不可变数据类型/index.html">
+<meta property="og:title" content="Python的继承和多态">
+<meta property="og:url" content="https://weizhaome.github.io/2019/10/05/Python的继承和多态/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="Python的可变数据类型和不可变数据类型：可变数据类型：list：数组是有序的，dict:字典是无序的，多次print一个数组得到的字典顺序可能不一样，可变的set：集合是无序不重复的。Python在声明可变类型后再次声明同样内容的可变类型时，Python会重新申请空间对其进行存储。例如：a=[1,2,3],b=[1,2,3],a is b False， a==b True。is可以用来判断两个">
+<meta property="og:description" content="Python类的继承定义一个父类Person:   class Person(object):     def __init__(self,name,sex):         self.name = name         self.sex = sex     def print_title(self):         if self.sex == &amp;quot;male&amp;quot;:">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-09-25T02:01:18.900Z">
+<meta property="og:updated_time" content="2019-10-05T13:49:58.589Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="python可变数据类型和不可变数据类型">
-<meta name="twitter:description" content="Python的可变数据类型和不可变数据类型：可变数据类型：list：数组是有序的，dict:字典是无序的，多次print一个数组得到的字典顺序可能不一样，可变的set：集合是无序不重复的。Python在声明可变类型后再次声明同样内容的可变类型时，Python会重新申请空间对其进行存储。例如：a=[1,2,3],b=[1,2,3],a is b False， a==b True。is可以用来判断两个">
+<meta name="twitter:title" content="Python的继承和多态">
+<meta name="twitter:description" content="Python类的继承定义一个父类Person:   class Person(object):     def __init__(self,name,sex):         self.name = name         self.sex = sex     def print_title(self):         if self.sex == &amp;quot;male&amp;quot;:">
 
   
 
@@ -127,20 +127,20 @@
 
   <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Python的可变数据类型和不可变数据类型："><span class="toc-text">Python的可变数据类型和不可变数据类型：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#可变数据类型："><span class="toc-text">可变数据类型：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#不可变数据类型："><span class="toc-text">不可变数据类型：</span></a></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Python类的继承"><span class="toc-text">Python类的继承</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Python两个判断继承的函数：isinstance-和issubclass"><span class="toc-text">Python两个判断继承的函数：isinstance()和issubclass()</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Python类的多态"><span class="toc-text">Python类的多态</span></a></li></ol>
   </div>
 
 
 
 <div class="content content-post CENTER">
-   <article id="post-python可变数据类型和不可变数据类型" class="article article-type-post" itemprop="blogPost">
+   <article id="post-Python的继承和多态" class="article article-type-post" itemprop="blogPost">
   <header class="article-header">
-    <h1 class="post-title">python可变数据类型和不可变数据类型</h1>
+    <h1 class="post-title">Python的继承和多态</h1>
 
     <div class="article-meta">
       <span>
         <i class="icon-calendar"></i>
-        <span>2019.09.25</span>
+        <span>2019.10.05</span>
       </span>
 
       
@@ -156,7 +156,7 @@
       
         <span>
           <i class="icon-comment"></i>
-          <a href="https://weizhaome.github.io/2019/09/25/python可变数据类型和不可变数据类型/#disqus_thread"></a>
+          <a href="https://weizhaome.github.io/2019/10/05/Python的继承和多态/#disqus_thread"></a>
         </span>
       
 
@@ -173,9 +173,35 @@
 
   <div class="article-content">
     
-      <h1 id="Python的可变数据类型和不可变数据类型："><a href="#Python的可变数据类型和不可变数据类型：" class="headerlink" title="Python的可变数据类型和不可变数据类型："></a>Python的可变数据类型和不可变数据类型：</h1><h2 id="可变数据类型："><a href="#可变数据类型：" class="headerlink" title="可变数据类型："></a>可变数据类型：</h2><p>list：数组是有序的，dict:字典是无序的，多次print一个数组得到的字典顺序可能不一样，可变的set：集合是无序不重复的。Python在声明可变类型后再次声明同样内容的可变类型时，Python会重新申请空间对其进行存储。例如：a=[1,2,3],b=[1,2,3],a is b False， a==b True。is可以用来判断两个变量是否指向同一地址，”==“来判断两个变量的值是否相等。”=“是赋值操作，当a=b时，a,b指向的是同一地址，改变a的值，b的值也会发生变化。</p>
-<h2 id="不可变数据类型："><a href="#不可变数据类型：" class="headerlink" title="不可变数据类型："></a>不可变数据类型：</h2><p>string,数值类型，元祖：有序的，不可变set.Python在声明不可变数据类型时会在已经声明的不可变类型对象中找该对象是否已经被声明过，如果已经声明过则变量会直接指向该对象，不会再申请新的内存空间。相当于增加了对象的引用。</p>
-
+      <h1 id="Python类的继承"><a href="#Python类的继承" class="headerlink" title="Python类的继承"></a>Python类的继承</h1><p>定义一个父类Person:  </p>
+<pre><code>class Person(object):
+    def __init__(self,name,sex):
+        self.name = name
+        self.sex = sex
+    def print_title(self):
+        if self.sex == &quot;male&quot;:
+            print(&quot;man&quot;)
+        else self.sex == &quot;female&quot;:
+            print(&quot;woman&quot;)
+</code></pre><p>定义一个Child类继承父类Person:</p>
+<pre><code>class Child(Person):
+    pass
+</code></pre><p>新建子类和父类的对象：</p>
+<pre><code>May = Child(&quot;May&quot;,&quot;female&quot;)
+Peter = Person(&quot;Peter&quot;,&quot;male&quot;) print(May.name,May.sex,Peter.name,Peter.sex)#子类将继承父类的方法和属性
+May.print_title()
+Peter.print_title()
+</code></pre><h2 id="Python两个判断继承的函数：isinstance-和issubclass"><a href="#Python两个判断继承的函数：isinstance-和issubclass" class="headerlink" title="Python两个判断继承的函数：isinstance()和issubclass()"></a>Python两个判断继承的函数：isinstance()和issubclass()</h2><p>isinstance()用于检查实例的类型,issubclass()用于检查类继承：</p>
+<pre><code>isinstance(May,Child) == True
+issubclass(Child,Person)==True
+</code></pre><h1 id="Python类的多态"><a href="#Python类的多态" class="headerlink" title="Python类的多态"></a>Python类的多态</h1><p>子类可以重写父类的方法，如果子类在创建时重新父类的方法则父类的方法被覆盖，如果不重写则可以直接使用父类的方法。</p>
+<pre><code>class Child(Person):#重写print_title()方法               
+    def print_title(self):
+        if self.sex == &quot;male&quot;:
+            print(&quot;boy&quot;)
+        elif self.sex == &quot;female&quot;:
+            print(&quot;girl&quot;)
+</code></pre>
     
   </div>
 
@@ -205,10 +231,10 @@
 
    
   <div class="box-prev-next clearfix">
-    <a class="show pull-left" href="/2019/07/05/机器翻译实习总结/">
+    <a class="show pull-left" href="/2019/09/25/python可变数据类型和不可变数据类型/">
         <i class="icon icon-angle-left"></i>
     </a>
-    <a class="show pull-right" href="/2019/10/05/Python的继承和多态/">
+    <a class="hide pull-right" href="/">
         <i class="icon icon-angle-right"></i>
     </a>
   </div>
@@ -282,7 +308,7 @@
   <script>
     var disqus_shortname = 'forsigner';
     
-    var disqus_url = 'https://weizhaome.github.io/2019/09/25/python可变数据类型和不可变数据类型/';
+    var disqus_url = 'https://weizhaome.github.io/2019/10/05/Python的继承和多态/';
     
     (function(){
       var dsq = document.createElement('script');
