@@ -7,7 +7,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Python的继承和多态 | Hexo</title>
+  <title>Python数据结构之链表 | Hexo</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -15,17 +15,17 @@
     <meta name="keywords" content="forsigner,前端,设计,Hexo主题,前端开发,用户体验,设计,frontend,design,nodejs,JavaScript" />
   
 
-  <meta name="description" content="Python类的继承定义一个父类Person:   class Person(object):     def __init__(self,name,sex):         self.name = name         self.sex = sex     def print_title(self):         if self.sex == &amp;quot;male&amp;quot;:">
+  <meta name="description" content="链表的基本元素有：    节点：每个节点包含两个部分，左边部分称为值域，用来存放数据；右边部分称为指针域，用来存放指针指向下一个元素。  head节点：指向链表的第一个节点。  tail节点：指向链表的最后一个节点。  None值:链表的最后一个节点的指针域为None值节点类的定义如下： class Node:     def __init__(self,val=None,next=None):">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Python的继承和多态">
-<meta property="og:url" content="https://weizhaome.github.io/2019/10/05/Python的继承和多态/index.html">
+<meta property="og:title" content="Python数据结构之链表">
+<meta property="og:url" content="https://weizhaome.github.io/2019/10/17/Python数据结构之链表/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="Python类的继承定义一个父类Person:   class Person(object):     def __init__(self,name,sex):         self.name = name         self.sex = sex     def print_title(self):         if self.sex == &amp;quot;male&amp;quot;:">
+<meta property="og:description" content="链表的基本元素有：    节点：每个节点包含两个部分，左边部分称为值域，用来存放数据；右边部分称为指针域，用来存放指针指向下一个元素。  head节点：指向链表的第一个节点。  tail节点：指向链表的最后一个节点。  None值:链表的最后一个节点的指针域为None值节点类的定义如下： class Node:     def __init__(self,val=None,next=None):">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-10-05T14:14:36.902Z">
+<meta property="og:updated_time" content="2019-10-17T12:57:08.905Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Python的继承和多态">
-<meta name="twitter:description" content="Python类的继承定义一个父类Person:   class Person(object):     def __init__(self,name,sex):         self.name = name         self.sex = sex     def print_title(self):         if self.sex == &amp;quot;male&amp;quot;:">
+<meta name="twitter:title" content="Python数据结构之链表">
+<meta name="twitter:description" content="链表的基本元素有：    节点：每个节点包含两个部分，左边部分称为值域，用来存放数据；右边部分称为指针域，用来存放指针指向下一个元素。  head节点：指向链表的第一个节点。  tail节点：指向链表的最后一个节点。  None值:链表的最后一个节点的指针域为None值节点类的定义如下： class Node:     def __init__(self,val=None,next=None):">
 
   
 
@@ -125,22 +125,17 @@
 </div>
 
 
-  <div id="toc" class="toc-article">
-    <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Python类的继承"><span class="toc-text">Python类的继承</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Python两个判断继承的函数：isinstance-和issubclass"><span class="toc-text">Python两个判断继承的函数：isinstance()和issubclass()</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Python类的多态"><span class="toc-text">Python类的多态</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Python使用下划线作为变量前缀和后缀制定特殊方法-变量"><span class="toc-text">Python使用下划线作为变量前缀和后缀制定特殊方法/变量</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Python的构造函数-new-和初始化函数-init"><span class="toc-text">Python的构造函数__new__()和初始化函数__init__()</span></a></li></ol>
-  </div>
-
 
 
 <div class="content content-post CENTER">
-   <article id="post-Python的继承和多态" class="article article-type-post" itemprop="blogPost">
+   <article id="post-Python数据结构之链表" class="article article-type-post" itemprop="blogPost">
   <header class="article-header">
-    <h1 class="post-title">Python的继承和多态</h1>
+    <h1 class="post-title">Python数据结构之链表</h1>
 
     <div class="article-meta">
       <span>
         <i class="icon-calendar"></i>
-        <span>2019.10.05</span>
+        <span>2019.10.17</span>
       </span>
 
       
@@ -156,7 +151,7 @@
       
         <span>
           <i class="icon-comment"></i>
-          <a href="https://weizhaome.github.io/2019/10/05/Python的继承和多态/#disqus_thread"></a>
+          <a href="https://weizhaome.github.io/2019/10/17/Python数据结构之链表/#disqus_thread"></a>
         </span>
       
 
@@ -173,46 +168,99 @@
 
   <div class="article-content">
     
-      <h1 id="Python类的继承"><a href="#Python类的继承" class="headerlink" title="Python类的继承"></a>Python类的继承</h1><p>定义一个父类Person:  </p>
-<pre><code>class Person(object):
-    def __init__(self,name,sex):
-        self.name = name
-        self.sex = sex
-    def print_title(self):
-        if self.sex == &quot;male&quot;:
-            print(&quot;man&quot;)
-        else self.sex == &quot;female&quot;:
-            print(&quot;woman&quot;)
-</code></pre><p>定义一个Child类继承父类Person:</p>
-<pre><code>class Child(Person):
-    pass
-</code></pre><p>新建子类和父类的对象：</p>
-<pre><code>May = Child(&quot;May&quot;,&quot;female&quot;)
-Peter = Person(&quot;Peter&quot;,&quot;male&quot;) print(May.name,May.sex,Peter.name,Peter.sex)#子类将继承父类的方法和属性
-May.print_title()
-Peter.print_title()
-</code></pre><h2 id="Python两个判断继承的函数：isinstance-和issubclass"><a href="#Python两个判断继承的函数：isinstance-和issubclass" class="headerlink" title="Python两个判断继承的函数：isinstance()和issubclass()"></a>Python两个判断继承的函数：isinstance()和issubclass()</h2><p>isinstance()用于检查实例的类型,issubclass()用于检查类继承：</p>
-<pre><code>isinstance(May,Child) == True
-issubclass(Child,Person)==True
-</code></pre><h1 id="Python类的多态"><a href="#Python类的多态" class="headerlink" title="Python类的多态"></a>Python类的多态</h1><p>子类可以重写父类的方法，如果子类在创建时重新父类的方法则父类的方法被覆盖，如果不重写则可以直接使用父类的方法。</p>
-<pre><code>class Child(Person):#重写print_title()方法               
-    def print_title(self):
-        if self.sex == &quot;male&quot;:
-            print(&quot;boy&quot;)
-        elif self.sex == &quot;female&quot;:
-            print(&quot;girl&quot;)
-</code></pre><h1 id="Python使用下划线作为变量前缀和后缀制定特殊方法-变量"><a href="#Python使用下划线作为变量前缀和后缀制定特殊方法-变量" class="headerlink" title="Python使用下划线作为变量前缀和后缀制定特殊方法/变量"></a>Python使用下划线作为变量前缀和后缀制定特殊方法/变量</h1><ul>
-<li>__foo被看作是类”私有的“，类外和子类都不能访问，不能用‘from module import *’导入，只能通过类对象访问。</li>
-<li>_foo 被看作是类”受保护的“，只有类对象和子类对象自己能访问，不能通过‘from module import *’导入。</li>
-<li>__foo__ 代表Python里特殊方法专用标识。</li>
+      <p>链表的基本元素有：  </p>
+<ul>
+<li>节点：每个节点包含两个部分，左边部分称为值域，用来存放数据；右边部分称为指针域，用来存放指针指向下一个元素。 </li>
+<li>head节点：指向链表的第一个节点。 </li>
+<li>tail节点：指向链表的最后一个节点。 </li>
+<li><p>None值:链表的最后一个节点的指针域为None值<br>节点类的定义如下：</p>
+<pre><code>class Node:
+    def __init__(self,val=None,next=None):
+        self.val = val
+        self.next = next
+</code></pre></li>
 </ul>
-<h1 id="Python的构造函数-new-和初始化函数-init"><a href="#Python的构造函数-new-和初始化函数-init" class="headerlink" title="Python的构造函数__new__()和初始化函数__init__()"></a>Python的构造函数__new__()和初始化函数__init__()</h1><ul>
-<li><p>“__new__(cls,<em>args,**kargs)“方法在Python中是真正的构造方法（创建并返回实例），是在类实例化对象时第一个调用的方法，将返回实例对象，通过这个方法可以产生一个”cls”对应的实例对象，所以说”__ new__(cls,</em>args,**kargs)”方法一定要有返回</p>
-</li>
-<li><p>对于”__ init__ (self,<em>args,**kwags)“方法，是一个初始化的方法，“self”代表由类产生出来的实例对象，” __init__(self,</em>args,**kwags)”将对这个对象进行相应的初始化操作。</p>
-</li>
-</ul>
-
+<p>链表的定义方法一：<br>可以先定义一个一个的节点，然后再把节点的关系表示出来：</p>
+<pre><code>node1 = Node(1)
+node2 = Node(2)
+node3 = Node(3)
+node1.next = node2
+node2.next = node3
+</code></pre><p>链表的定义方法二：定义链表类及其基本操作</p>
+<pre><code>class LinkedList(object):
+    def __init__(self,head = None):
+        self.head = head
+    def __len__(self):#计算链表长度
+        curr = self.head
+        counter = 0
+        while curr is not None:
+            counter +=1
+            curr = curr.next
+        return counter
+    def printNode(self):#打印链表元素
+        node = self.head
+        while node is not None:
+            print(node.val)
+            node = node.next
+        return
+    def insertToFront(self,data):#从前面插入节点
+        if data is not None:
+            node = Node(data,self.head)
+            self.head = node
+            return node
+    def append(self,data):#从后面添加节点
+        if data is not None:
+            node = Node(data)
+            if self.head is None:
+                self.head = node
+                return node
+            curr_node = self.head
+            while curr_node.next is not None:
+                curr_node = curr_node.next
+            curr_node.next = node
+            return self.head
+    def delete(self,data):#删除数值为data的节点
+        if self.head is None:
+            return
+        if self.head.val == data:
+            self.head = self.head.next
+            return
+        curr_node = self.head
+        while curr_node.next is not None:
+            if curr_node.next.val == data:
+                curr_node.next = curr_node.next.next
+                return
+            curr_node = curr_node.next
+    def deleteRepeat(self):#删除链表中重复的元素
+        uniq = []
+        if self.head is None:
+            return
+        curr_node = self.head
+        uniq.append(self.head.val)
+        while curr_node.next is not None:
+            if curr_node.next.val in uniq:
+                curr_node.next = curr_node.next.next
+            else:
+                uniq.append(curr_node.next.val)
+                curr_node = curr_node.next
+        return
+</code></pre><p>测试：</p>
+<pre><code>tmp = LinkedList()
+tmp.append(1)
+tmp.append(2)
+tmp.insertToFront(1)
+tmp.append(3)
+tmp.append(4)
+tmp.append(5)
+tmp.deletere()
+tmp.printNode()
+</code></pre><p>输出为：</p>
+<pre><code>1
+2
+3
+4
+5
+</code></pre>
     
   </div>
 
@@ -242,10 +290,10 @@ issubclass(Child,Person)==True
 
    
   <div class="box-prev-next clearfix">
-    <a class="show pull-left" href="/2019/09/25/python可变数据类型和不可变数据类型/">
+    <a class="show pull-left" href="/2019/10/05/Python的继承和多态/">
         <i class="icon icon-angle-left"></i>
     </a>
-    <a class="show pull-right" href="/2019/10/17/Python数据结构之链表/">
+    <a class="hide pull-right" href="/">
         <i class="icon icon-angle-right"></i>
     </a>
   </div>
@@ -319,7 +367,7 @@ issubclass(Child,Person)==True
   <script>
     var disqus_shortname = 'forsigner';
     
-    var disqus_url = 'https://weizhaome.github.io/2019/10/05/Python的继承和多态/';
+    var disqus_url = 'https://weizhaome.github.io/2019/10/17/Python数据结构之链表/';
     
     (function(){
       var dsq = document.createElement('script');
