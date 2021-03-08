@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>常见排序算法总结 | Hexo</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="sorts," />
+  
+
+  <meta name="description" content="常见排序算法总结冒泡排序基本思想： 比较序列中相邻两个数据的大小，如果两个数的排序方式和目标相反则调换两个数的位置。  代码实现(python)：def bubble_sort(mylist):     n = len(mylist)     for j in range(n-1):         for i in range(0,n-1-j):             count = 0">
+<meta name="keywords" content="sorts">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常见排序算法总结">
+<meta property="og:url" content="https://weizhaome.github.io/2019/04/16/常见排序算法总结/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="常见排序算法总结冒泡排序基本思想： 比较序列中相邻两个数据的大小，如果两个数的排序方式和目标相反则调换两个数的位置。  代码实现(python)：def bubble_sort(mylist):     n = len(mylist)     for j in range(n-1):         for i in range(0,n-1-j):             count = 0">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://weizhaome.github.io/images/sort/shell%27s%20sort.jpg">
+<meta property="og:updated_time" content="2019-09-01T02:44:36.915Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="常见排序算法总结">
+<meta name="twitter:description" content="常见排序算法总结冒泡排序基本思想： 比较序列中相邻两个数据的大小，如果两个数的排序方式和目标相反则调换两个数的位置。  代码实现(python)：def bubble_sort(mylist):     n = len(mylist)     for j in range(n-1):         for i in range(0,n-1-j):             count = 0">
+<meta name="twitter:image" content="https://weizhaome.github.io/images/sort/shell%27s%20sort.jpg">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cben" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#常见排序算法总结"><span class="toc-text">常见排序算法总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#冒泡排序"><span class="toc-text">冒泡排序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本思想："><span class="toc-text">基本思想：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码实现-python-："><span class="toc-text">代码实现(python)：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#时间复杂度："><span class="toc-text">时间复杂度：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#稳定性："><span class="toc-text">稳定性：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#插入排序"><span class="toc-text">插入排序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本思想：-1"><span class="toc-text">基本思想：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码实现-python"><span class="toc-text">代码实现(python)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#时间复杂度：-1"><span class="toc-text">时间复杂度：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#稳定性：-1"><span class="toc-text">稳定性：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#选择排序"><span class="toc-text">选择排序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本思想：-2"><span class="toc-text">基本思想：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码实现（Python）"><span class="toc-text">代码实现（Python）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#时间复杂度：-2"><span class="toc-text">时间复杂度：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#稳定性：-2"><span class="toc-text">稳定性：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#希尔排序"><span class="toc-text">希尔排序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本思想：-3"><span class="toc-text">基本思想：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#过程示意图："><span class="toc-text">过程示意图：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#归并排序"><span class="toc-text">归并排序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本思想：-4"><span class="toc-text">基本思想：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例："><span class="toc-text">示例：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#小结："><span class="toc-text">小结：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#快速排序"><span class="toc-text">快速排序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本思想：-5"><span class="toc-text">基本思想：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#排序演示："><span class="toc-text">排序演示：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#小结：-1"><span class="toc-text">小结：</span></a></li></ol></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-常见排序算法总结" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">常见排序算法总结</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2019.04.16</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>weizhao</span>
+        </span>
+      
+
+      
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="https://weizhaome.github.io/2019/04/16/常见排序算法总结/#disqus_thread"></a>
+        </span>
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="常见排序算法总结"><a href="#常见排序算法总结" class="headerlink" title="常见排序算法总结"></a>常见排序算法总结</h1><h2 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h2><h3 id="基本思想："><a href="#基本思想：" class="headerlink" title="基本思想："></a>基本思想：</h3><blockquote>
+<p>比较序列中相邻两个数据的大小，如果两个数的排序方式和目标相反则调换两个数的位置。</p>
+</blockquote>
+<h3 id="代码实现-python-："><a href="#代码实现-python-：" class="headerlink" title="代码实现(python)："></a>代码实现(python)：</h3><pre><code>def bubble_sort(mylist):
+    n = len(mylist)
+    for j in range(n-1):
+        for i in range(0,n-1-j):
+            count = 0
+            if mylist[i]&gt;mylist[i+1]:
+                mylist[i], mylist[i+1]=mylist[i+1],mylist[i]
+                count+=1
+         if count == 0:
+             break
+</code></pre><h3 id="时间复杂度："><a href="#时间复杂度：" class="headerlink" title="时间复杂度："></a>时间复杂度：</h3><blockquote>
+<p>最好情况：正序有序，则只需要比较n次不需要交换位置，则时间复杂度为O(n)。<br>最坏情况：逆序有序，则需要比较(n-1)+(n-2)+……+1，则时间复杂度为O(n<em>n)。<br>平均情况：O(n</em>n)。</p>
+</blockquote>
+<h3 id="稳定性："><a href="#稳定性：" class="headerlink" title="稳定性："></a>稳定性：</h3><blockquote>
+<p>稳定性是指序列中两个相等的数在经过排序算法后两个数的位置是否会发生变化，因为冒泡排序当相邻两个数相等时不会交换他们的位置，所以冒泡算法是稳定的。</p>
+</blockquote>
+<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><h3 id="基本思想：-1"><a href="#基本思想：-1" class="headerlink" title="基本思想："></a>基本思想：</h3><blockquote>
+<p>序列中的数往前依次与其前面的数作比较寻找该数的合适位置，直至最后一个元素。</p>
+</blockquote>
+<h3 id="代码实现-python"><a href="#代码实现-python" class="headerlink" title="代码实现(python)"></a>代码实现(python)</h3><pre><code>def insertion_sort(mylist):
+    n = len(mylist)
+    for i in range(1,n):
+        for j in range(i,0,-1):
+            if mylist[j]&gt;mylist[j-1]:
+                mylist[j],mylist[j-1]=mylist[j-1],mylist[j]
+                else:
+                    break
+</code></pre><h3 id="时间复杂度：-1"><a href="#时间复杂度：-1" class="headerlink" title="时间复杂度："></a>时间复杂度：</h3><blockquote>
+<p>最好情况：正序有序，比较n次不需要交换位置，时间复杂度为O(n)。<br>最坏情况：逆序有序，比较n个元素需要跟前面的n-1个元素比较，时间复杂度为O(n^2)。<br>平均情况：O(n^2)。</p>
+</blockquote>
+<h3 id="稳定性：-1"><a href="#稳定性：-1" class="headerlink" title="稳定性："></a>稳定性：</h3><blockquote>
+<p>当两个元素比较时如果两个元素相等则不需要移动，所以插入排序是稳定的。 </p>
+</blockquote>
+<h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><h3 id="基本思想：-2"><a href="#基本思想：-2" class="headerlink" title="基本思想："></a>基本思想：</h3><blockquote>
+<p>每次从待排序的数据元素中直接选择最大或者最小的元素作为序列的第一个元素。</p>
+</blockquote>
+<h3 id="代码实现（Python）"><a href="#代码实现（Python）" class="headerlink" title="代码实现（Python）"></a>代码实现（Python）</h3><pre><code>def selection_sort(mylist):
+    n = len(mylist)
+    for i in range(0,n-1):
+        min = mylist[i]
+        for j in range(1,n):
+            if min &gt; mylist[j]:
+               min = mylist[j]
+        if min != mylist[i]:
+            temp = min
+            min = mylist[j]
+            mylist[j]=min
+</code></pre><h3 id="时间复杂度：-2"><a href="#时间复杂度：-2" class="headerlink" title="时间复杂度："></a>时间复杂度：</h3><blockquote>
+<p>最好情况：O(n^2)<br>最坏情况：O(n^2)<br>平均情况：O(n^2)  </p>
+</blockquote>
+<h3 id="稳定性：-2"><a href="#稳定性：-2" class="headerlink" title="稳定性："></a>稳定性：</h3><blockquote>
+<p>不稳定</p>
+</blockquote>
+<h2 id="希尔排序"><a href="#希尔排序" class="headerlink" title="希尔排序"></a>希尔排序</h2><h3 id="基本思想：-3"><a href="#基本思想：-3" class="headerlink" title="基本思想："></a>基本思想：</h3><blockquote>
+<p>希尔排序是把记录按下标的一定增量分组，对每组使用直接插入排序算法排序；随着增量逐渐减少，每组包含的关键词越来越多，当增量减至1时，整个文件恰被分成一组，算法便终止。  </p>
+</blockquote>
+<h3 id="过程示意图："><a href="#过程示意图：" class="headerlink" title="过程示意图："></a>过程示意图：</h3><p><img src="/images/sort/shell&#39;s sort.jpg" alt="shell_sort"></p>
+<h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><h3 id="基本思想：-4"><a href="#基本思想：-4" class="headerlink" title="基本思想："></a>基本思想：</h3><blockquote>
+<p>将已有序的子序列合并，得到完全有序的序列；即先使每个子序列有序，再使子序列段间有序。若将两个有序表合并成一个有序表，称为二路归并</p>
+</blockquote>
+<h3 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h3><blockquote>
+<p>归并操作(merge)，也叫归并算法，指的是将两个顺序序列合并成一个顺序序列的方法。<br>如　设有数列{6，202，100，301，38，8，1}<br>初始状态：6,202,100,301,38,8,1<br>第一次归并后：{6,202},{100,301},{8,38},{1}，比较次数：3；<br>第二次归并后：{6,100,202,301}，{1,8,38}，比较次数：4；<br>第三次归并后：{1,6,8,38,100,202,301},比较次数：4；<br>总的比较次数为：3+4+4=11；<br>逆序数为14；  </p>
+</blockquote>
+<h3 id="小结："><a href="#小结：" class="headerlink" title="小结："></a>小结：</h3><blockquote>
+<p>归并排序的速度仅次于快速排序，且是一种稳定的排序算法。</p>
+</blockquote>
+<h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h2><h3 id="基本思想：-5"><a href="#基本思想：-5" class="headerlink" title="基本思想："></a>基本思想：</h3><blockquote>
+<p>任意选取待排序数组中的一个数作为关键数，将待排序数组中比关键数小的数都位于关键数的左边，比关键数大的数都在关键数的右边。</p>
+</blockquote>
+<h3 id="排序演示："><a href="#排序演示：" class="headerlink" title="排序演示："></a>排序演示：</h3><blockquote>
+<p>假设一开始序列{xi}是：5，3，7，6，4，1，0，2，9，10，8。<br>此时，选取关键数为序列的第一个元素：ref=5，i=1，j=11。<br>从后往前找，第一个比5小的数是x8=2，因此序列为：2，3，7，6，4，1，0，5，9，10，8。<br>此时i=1，j=8，从前往后找，第一个比5大的数是x3=7，因此序列为：2，3，5，6，4，1，0，7，9，10，8。<br>此时，i=3，j=8，从第8位往前找，第一个比5小的数是x7=0，因此：2，3，0，6，4，1，5，7，9，10，8。<br>此时，i=3，j=7，从第3位往后找，第一个比5大的数是x4=6，因此：2，3，0，5，4，1，6，7，9，10，8。<br>此时，i=4，j=7，从第7位往前找，第一个比5小的数是x6=1，因此：2，3，0，1，4，5，6，7，9，10，8。<br>此时，i=4，j=6，从第4位往后找，直到第6位才有比5大的数，这时，i=j=6，ref成为一条分界线，它之前的数都比它小，之后的数都比它大，对于前后两部分数，可以采用同样的方法来排序。</p>
+</blockquote>
+<h3 id="小结：-1"><a href="#小结：-1" class="headerlink" title="小结："></a>小结：</h3><blockquote>
+<p>快速排序是一种不稳定的排序算法，最好情况下的时间复杂度为O(nlog^n),最坏情况下为：O(n^2),平均情况下为：O(nlog^n)。</p>
+</blockquote>
+
+    
+  </div>
+
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持forsigner</div>
+        <ul>
+        
+          <li class="item">
+            
+              <span>支付宝扫一扫</span>
+            
+            <img src="/images/qr-alipay.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2019/03/25/解释性语言和编译型语言的区别/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2019/07/05/机器翻译实习总结/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+
+   
+      <div class="git"></div>
+   
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'https://weizhaome.github.io/2019/04/16/常见排序算法总结/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

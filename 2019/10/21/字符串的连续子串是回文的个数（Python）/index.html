@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 
 
-  <html class="light page-page">
+  <html class="light page-post">
 
 
 <head>
   <meta charset="utf-8">
   
-  <title>About Me | Hexo</title>
+  <title>字符串的连续子串是回文的个数（Python） | Hexo</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -15,17 +15,17 @@
     <meta name="keywords" content="forsigner,前端,设计,Hexo主题,前端开发,用户体验,设计,frontend,design,nodejs,JavaScript" />
   
 
-  <meta name="description" content="基本信息   姓名：赵伟     性别：女   外语水平：CET6   政治面貌：党员   邮箱： zhao_wei@tju.edu.cn   硕士就读于天津大学（985）计算机技术专业（2017至今）   本科就读于东北林业大学（211）软件工程专业（2013-2017）   论文成果     时间 论文名称 排序 刊物等级        2017.12 UltraPse: A Univers">
-<meta property="og:type" content="website">
-<meta property="og:title" content="About Me">
-<meta property="og:url" content="https://weizhaome.github.io/about/index.html">
+  <meta name="description" content="字符串的连续子串是回文的个数 首先编写一个函数用来判断字符串是否是回文： 123456789101112131415def isPalindrome(mystr):    l = len(mystr)    i = 0    count = 0    while i&amp;lt;(l/2):        if(mystr[i]==mystr[l-i-1]):            count += 1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="字符串的连续子串是回文的个数（Python）">
+<meta property="og:url" content="https://weizhaome.github.io/2019/10/21/字符串的连续子串是回文的个数（Python）/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="基本信息   姓名：赵伟     性别：女   外语水平：CET6   政治面貌：党员   邮箱： zhao_wei@tju.edu.cn   硕士就读于天津大学（985）计算机技术专业（2017至今）   本科就读于东北林业大学（211）软件工程专业（2013-2017）   论文成果     时间 论文名称 排序 刊物等级        2017.12 UltraPse: A Univers">
+<meta property="og:description" content="字符串的连续子串是回文的个数 首先编写一个函数用来判断字符串是否是回文： 123456789101112131415def isPalindrome(mystr):    l = len(mystr)    i = 0    count = 0    while i&amp;lt;(l/2):        if(mystr[i]==mystr[l-i-1]):            count += 1">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-07-05T06:52:00.720Z">
+<meta property="og:updated_time" content="2019-10-21T14:20:15.299Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="About Me">
-<meta name="twitter:description" content="基本信息   姓名：赵伟     性别：女   外语水平：CET6   政治面貌：党员   邮箱： zhao_wei@tju.edu.cn   硕士就读于天津大学（985）计算机技术专业（2017至今）   本科就读于东北林业大学（211）软件工程专业（2013-2017）   论文成果     时间 论文名称 排序 刊物等级        2017.12 UltraPse: A Univers">
+<meta name="twitter:title" content="字符串的连续子串是回文的个数（Python）">
+<meta name="twitter:description" content="字符串的连续子串是回文的个数 首先编写一个函数用来判断字符串是否是回文： 123456789101112131415def isPalindrome(mystr):    l = len(mystr)    i = 0    count = 0    while i&amp;lt;(l/2):        if(mystr[i]==mystr[l-i-1]):            count += 1">
 
   
 
@@ -125,17 +125,22 @@
 </div>
 
 
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#字符串的连续子串是回文的个数"><span class="toc-text">字符串的连续子串是回文的个数</span></a></li></ol>
+  </div>
+
 
 
 <div class="content content-post CENTER">
-   <article id="page-" class="article article-type-page" itemprop="blogPost">
+   <article id="post-字符串的连续子串是回文的个数（Python）" class="article article-type-post" itemprop="blogPost">
   <header class="article-header">
-    <h1 class="post-title">About Me</h1>
+    <h1 class="post-title">字符串的连续子串是回文的个数（Python）</h1>
 
     <div class="article-meta">
       <span>
         <i class="icon-calendar"></i>
-        <span>2018.09.16</span>
+        <span>2019.10.21</span>
       </span>
 
       
@@ -151,7 +156,7 @@
       
         <span>
           <i class="icon-comment"></i>
-          <a href="https://weizhaome.github.io/about/index.html#disqus_thread"></a>
+          <a href="https://weizhaome.github.io/2019/10/21/字符串的连续子串是回文的个数（Python）/#disqus_thread"></a>
         </span>
       
 
@@ -168,102 +173,13 @@
 
   <div class="article-content">
     
-      <ul>
-<li><strong>基本信息</strong></li>
+      <h1 id="字符串的连续子串是回文的个数"><a href="#字符串的连续子串是回文的个数" class="headerlink" title="字符串的连续子串是回文的个数"></a>字符串的连续子串是回文的个数</h1><ul>
+<li><p>首先编写一个函数用来判断字符串是否是回文：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">def isPalindrome(mystr):</span><br><span class="line">    l = len(mystr)</span><br><span class="line">    i = 0</span><br><span class="line">    count = 0</span><br><span class="line">    while i&lt;(l/2):</span><br><span class="line">        if(mystr[i]==mystr[l-i-1]):</span><br><span class="line">            count += 1</span><br><span class="line">            i += 1</span><br><span class="line">        else:</span><br><span class="line">            count = 0</span><br><span class="line">            break</span><br><span class="line">    if(count==0):</span><br><span class="line">        return 0</span><br><span class="line">    else:</span><br><span class="line">        return 1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>找出字符串所有的连续子串并分别判断是否为回文：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">def palindNum(mystr):</span><br><span class="line">    sub_str = []</span><br><span class="line">    ls = len(mystr)</span><br><span class="line">    count = 0</span><br><span class="line">    for i in range(1,ls):#i控制步长</span><br><span class="line">        for j in range(ls-i+1):#j控制位置</span><br><span class="line">            sub_str.append(mystr[j:j+i])</span><br><span class="line">    for i in sub_str:</span><br><span class="line">        count += isPalindrome(i)</span><br><span class="line">    return count</span><br></pre></td></tr></table></figure></li>
 </ul>
-<blockquote>
-<p>姓名：赵伟  </p>
-</blockquote>
-<blockquote>
-<p>性别：女</p>
-</blockquote>
-<blockquote>
-<p>外语水平：CET6</p>
-</blockquote>
-<blockquote>
-<p>政治面貌：党员</p>
-</blockquote>
-<blockquote>
-<p>邮箱： <a href="mailto:zhao_wei@tju.edu.cn" target="_blank" rel="noopener">zhao_wei@tju.edu.cn</a></p>
-</blockquote>
-<blockquote>
-<p>硕士就读于天津大学（985）计算机技术专业（2017至今）</p>
-</blockquote>
-<blockquote>
-<p>本科就读于东北林业大学（211）软件工程专业（2013-2017）</p>
-</blockquote>
-<ul>
-<li><strong>论文成果</strong></li>
-</ul>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">时间</th>
-<th style="text-align:center">论文名称</th>
-<th style="text-align:center">排序</th>
-<th style="text-align:center">刊物等级</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">   2017.12</td>
-<td style="text-align:center">UltraPse: A Universal and Extensible Software Platform for Representing Biological Sequences</td>
-<td style="text-align:center">二作</td>
-<td style="text-align:center">SCI三区</td>
-</tr>
-<tr>
-<td style="text-align:center">   2018.09</td>
-<td style="text-align:center">A brief review on software tools in generating Chou’s pseudo-factor representations for all types of biological sequences</td>
-<td style="text-align:center">一作</td>
-<td style="text-align:center">SCI四区</td>
-</tr>
-<tr>
-<td style="text-align:center">   2019.02</td>
-<td style="text-align:center">Predicting protein sub-Golgi locations by combining functional domain enrichment scores with pseudo-amino acid compositions</td>
-<td style="text-align:center">一作</td>
-<td style="text-align:center">SCI四区在投</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li><strong>项目经历</strong></li>
-</ul>
-<blockquote>
-<p>1、2019.05-至今，在慧言科技（天津）有限公司实习，参与机器翻译项目，编写shell脚本程序对有千万级数据量的语料库进行清洗，并利用深度学习算法训练和测试机器翻译模型，实现对现有机器翻译模型的优化和升级；</p>
-</blockquote>
-<blockquote>
-<p>2、利用flask框架构建蛋白质亚细胞位点预测网站，用户向网站提交蛋白质序列后，网站将对该蛋白质序列的亚细胞核、亚线粒体、亚叶绿体以及亚高尔基体位点进行预测，并将结果返回给用户。</p>
-<ul>
-<li><strong>所获证书</strong></li>
-</ul>
-</blockquote>
-<blockquote>
-<p>1、2016-2017学年： 获得“三好学生”荣誉称号；“国家励志”奖学金；</p>
-</blockquote>
-<blockquote>
-<p>2、2015-2016学年： 获得“优秀团员”荣誉称号；</p>
-</blockquote>
-<blockquote>
-<p>3、2014-2015学年：“牵手”奖学金；获得校级“优秀学生干部”荣誉称号。</p>
-</blockquote>
-<ul>
-<li><strong>学生干部任职情况</strong></li>
-</ul>
-<blockquote>
-<p>1、2015.09-2016.09 担任东北林业大学勤工助学中心部长，组织东北林业大学家庭经济困难学生技能培训并取得圆满成功；</p>
-</blockquote>
-<blockquote>
-<p>2、2013.09-2017.06 担任寝室长，带领我们寝室成为校“优秀寝室”。</p>
-</blockquote>
-<ul>
-<li><strong> 社会实践经历</strong></li>
-</ul>
-<blockquote>
-<p>1、2018.03-2018.07，在天津大学担任C++课程助教，协助老师完成学生上机实验并在过程中解决学生遇到的问题；</p>
-</blockquote>
-<blockquote>
-<p>2、2015.09-2016.09，在东北林业大学教育超市丹青分店担任收银员，让自己的耐心和细心都有所提高。</p>
-</blockquote>
 
     
   </div>
@@ -294,10 +210,10 @@
 
    
   <div class="box-prev-next clearfix">
-    <a class="hide pull-left" href="/">
+    <a class="show pull-left" href="/2019/10/17/Python数据结构之栈/">
         <i class="icon icon-angle-left"></i>
     </a>
-    <a class="hide pull-right" href="/">
+    <a class="show pull-right" href="/2019/11/24/linux挂载U盘失败/">
         <i class="icon icon-angle-right"></i>
     </a>
   </div>
@@ -360,7 +276,7 @@
 
 
   
-      <div class="fexo-comments comments-page">
+      <div class="fexo-comments comments-post">
     
   <section class="disqus-comments">
     <div id="disqus_thread">
@@ -371,7 +287,7 @@
   <script>
     var disqus_shortname = 'forsigner';
     
-    var disqus_url = 'https://weizhaome.github.io/about/index.html';
+    var disqus_url = 'https://weizhaome.github.io/2019/10/21/字符串的连续子串是回文的个数（Python）/';
     
     (function(){
       var dsq = document.createElement('script');
