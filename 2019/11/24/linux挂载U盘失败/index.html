@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>linux挂载U盘失败 | Hexo</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="forsigner,前端,设计,Hexo主题,前端开发,用户体验,设计,frontend,design,nodejs,JavaScript" />
+  
+
+  <meta name="description" content="问题描述： linux系统在未完全完成U盘的写操作时就将U盘拔掉，造成再次插入U盘时出现无法挂载的问题：  Error mounting &#x2F;dev&#x2F;sdb1 at &#x2F;media&#x2F;xxx&#x2F;xx: Command-line&#96;mount -t “ntfs” -o”uhelper&#x3D;udisks2,nodev,nosuid,uid&#x3D;1000,gid&#x3D;1000,dmask&#x3D;0077,fmask&#x3D;0177””&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux挂载U盘失败">
+<meta property="og:url" content="https://weizhaome.github.io/2019/11/24/linux%E6%8C%82%E8%BD%BDU%E7%9B%98%E5%A4%B1%E8%B4%A5/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="问题描述： linux系统在未完全完成U盘的写操作时就将U盘拔掉，造成再次插入U盘时出现无法挂载的问题：  Error mounting &#x2F;dev&#x2F;sdb1 at &#x2F;media&#x2F;xxx&#x2F;xx: Command-line&#96;mount -t “ntfs” -o”uhelper&#x3D;udisks2,nodev,nosuid,uid&#x3D;1000,gid&#x3D;1000,dmask&#x3D;0077,fmask&#x3D;0177””&#x2F;">
+<meta property="og:locale">
+<meta property="article:published_time" content="2019-11-24T06:51:47.000Z">
+<meta property="article:modified_time" content="2021-03-14T13:25:51.537Z">
+<meta property="article:author" content="weizhao">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cben" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0%EF%BC%9A"><span class="toc-text">问题描述：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%EF%BC%9A"><span class="toc-text">解决：</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-linux挂载U盘失败" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">linux挂载U盘失败</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2019.11.24</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>weizhao</span>
+        </span>
+      
+
+      
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="https://weizhaome.github.io/2019/11/24/linux%E6%8C%82%E8%BD%BDU%E7%9B%98%E5%A4%B1%E8%B4%A5/#disqus_thread"></a>
+        </span>
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="问题描述："><a href="#问题描述：" class="headerlink" title="问题描述："></a>问题描述：</h1><ul>
+<li>linux系统在未完全完成U盘的写操作时就将U盘拔掉，造成再次插入U盘时出现无法挂载的问题：</li>
+</ul>
+<p>Error mounting /dev/sdb1 at /media/xxx/xx: Command-line`mount -t “ntfs” -o”uhelper=udisks2,nodev,nosuid,uid=1000,gid=1000,dmask=0077,fmask=0177””/dev/sdb1” “/media/eden/文檔”‘ exited with non-zero exit status14: The disk contains an unclean file system (0, 0).<br>Metadata kept in Windows cache, refused to mount.<br>Failed to mount ‘/dev/sdb1’: Operation not permitted<br>The NTFS partition is in an unsafe state. Please resume andshutdown<br>Windows fully (no hibernation or fast restarting), or mount thevolume<br>read-only with the ‘ro’ mount option.</p>
+<h1 id="解决："><a href="#解决：" class="headerlink" title="解决："></a>解决：</h1><ul>
+<li>从错误信息中可以看到U盘的分区位于/dev/sdb1，我们使用命令：<font color="#dd0000">sudo ntfsfix /dev/sdb1</font> 来修复这个错误。</li>
+<li>ntfsfix 实用程序可修复一些常见的 NTFS 问题，它将修复一些基本的 NTFS 不一致性，重置 NTFS 日志文件并在下次重新引导操作系统时安排进行 NTFS 一致性检查。</li>
+</ul>
+
+    
+  </div>
+
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持forsigner</div>
+        <ul>
+        
+          <li class="item">
+            
+              <span>支付宝扫一扫</span>
+            
+            <img src="/images/qr-alipay.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2019/10/21/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E8%BF%9E%E7%BB%AD%E5%AD%90%E4%B8%B2%E6%98%AF%E5%9B%9E%E6%96%87%E7%9A%84%E4%B8%AA%E6%95%B0%EF%BC%88Python%EF%BC%89/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2021/03/08/sql%E6%B3%A8%E5%85%A5%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+
+   
+      <div class="git"></div>
+   
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'https://weizhaome.github.io/2019/11/24/linux%E6%8C%82%E8%BD%BDU%E7%9B%98%E5%A4%B1%E8%B4%A5/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
